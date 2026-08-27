@@ -1,13 +1,13 @@
 package edu.instituto.gestor_eventos.controller;
 
-import edu.instituto.gestor_eventos.model.Evento;
 import edu.instituto.gestor_eventos.service.EventoService;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.List;
-
-@RestController
-@RequestMapping("/api")
+@Controller
+@RequestMapping("/eventos")
 public class EventoController {
 
     private final EventoService eventoService;
@@ -16,13 +16,9 @@ public class EventoController {
         this.eventoService = eventoService;
     }
 
-    @GetMapping("/saludo")
-    public String saludo() {
-        return "Proyecto Gestor de Eventos funcionando";
-    }
-
-    @GetMapping("/eventos")
-    public List<Evento> listarEventos() {
-        return eventoService.listar();
+    @GetMapping
+    public String listarEventos(Model model) {
+        model.addAttribute("eventos", eventoService.listar());
+        return "eventos";
     }
 }
