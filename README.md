@@ -1,74 +1,83 @@
-# Gestor de Eventos — Spring Boot
+# Gestor de Eventos
 
-Proyecto académico desarrollado con Spring Boot como parte del curso de desarrollo web.
+Aplicación web desarrollada con Spring Boot como proyecto
+acumulativo de Programación IV.
 
 ## Tecnologías utilizadas
 
 - Java 21
-- Spring Boot 4.1.0
-- Spring Web (spring-boot-starter-web)
-- Thymeleaf (spring-boot-starter-thymeleaf)
-- Spring Validation (spring-boot-starter-validation)
-- Spring DevTools (spring-boot-devtools)
-- Maven Wrapper
-
-## Configuración del proyecto
-
-### Requisitos previos
-
-- JDK 21 instalado
-- Git instalado
-
-### Clonar el repositorio
-
-```bash
-git clone https://github.com/Andrey052101/gestor-eventos.git
-cd gestor-eventos
-```
-
-### Compilar el proyecto
-
-```bash
-.\mvnw.cmd clean package
-```
-
-### Ejecutar la aplicación
-
-```bash
-.\mvnw.cmd spring-boot:run
-```
-
-La aplicación inicia en: http://localhost:8080
-
-## Configuración application.properties
-
-```properties
-spring.application.name=gestor-eventos
-server.port=8080
-spring.profiles.active=dev
-logging.level.edu.instituto=DEBUG
-```
+- Spring Boot 4.1
+- Spring MVC
+- Thymeleaf
+- Maven
 
 ## Estructura del proyecto
 
-gestor-eventos/
-├── src/
-│ └── main/
-│ ├── java/
-│ │ └── edu/instituto/gestor_eventos/
-│ └── resources/
-│ └── application.properties
-├── .mvn/wrapper/
-├── mvnw
-├── mvnw.cmd
-├── pom.xml
-└── README.md
+src/main/java/edu/instituto/gestor_eventos/
+├── controller/
+│ ├── EventoController.java
+│ ├── InscripcionController.java
+│ └── UsuarioController.java
+├── model/
+│ ├── Evento.java
+│ ├── Inscripcion.java
+│ └── Usuario.java
+├── repository/
+│ ├── EventoRepository.java
+│ ├── InscripcionRepository.java
+│ └── UsuarioRepository.java
+└── service/
+├── EventoService.java
+├── InscripcionService.java
+└── UsuarioService.java
 
 
-## Semana 03 — Lo que se configuró
+## Cómo ejecutar
 
-- Dependencias Maven corregidas y actualizadas en pom.xml
-- application.properties configurado con nombre de app, puerto 8080, perfil dev y nivel DEBUG
-- Verificación de Maven Wrapper disponible
-- Compilación exitosa con mvnw clean package
-- Aplicación ejecutándose correctamente en puerto 8080
+```bash
+./mvnw spring-boot:run
+```
+
+Abrir en el navegador:
+
+http://localhost:8080/eventos
+
+
+## Avances por semana
+
+### Semana 1 — Configuración inicial
+- Creación del proyecto con Spring Initializr
+- Configuración de dependencias: Spring Web, Thymeleaf
+- Estructura base del proyecto
+- Archivo application.properties
+
+### Semana 2 — Fundamentos de Spring
+- Arquitectura por capas: Controller, Service, Model
+- Creación de paquetes controller, model, service
+- Creación del POJO Evento
+- Anotaciones: @SpringBootApplication, @Service, @RestController
+
+### Semana 3 — Configuración y dependencias
+- Configuración de dependencias de aplicación web con Spring
+- Implementación de repositorios
+- Configuración del servidor en application.properties
+
+### Semana 4 — Spring MVC y Thymeleaf
+- Controlador MVC con @Controller y @GetMapping
+- Separación de responsabilidades: Controller → Service → Model → View
+- Vista dinámica con Thymeleaf (th:each, th:text)
+- Ruta funcional: /eventos
+
+## Arquitectura
+
+Navegador → EventoController → EventoService → Evento → eventos.html
+
+
+## Criterios de la práctica Semana 4
+
+- @Controller con @GetMapping("/eventos")
+- Model para pasar datos a la vista
+- EventoService con método listar()
+- Plantilla eventos.html en src/main/resources/templates/
+- th:each y th:text para mostrar datos dinámicamente
+  

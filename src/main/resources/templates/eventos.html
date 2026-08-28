@@ -3,36 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <title>Gestor de Eventos</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
     <style>
-        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f6f8; }
-        h1 { color: #2c3e50; }
-        table { border-collapse: collapse; width: 100%; background: white; }
-        th { background-color: #2c3e50; color: white; padding: 12px 16px; text-align: left; }
-        td { padding: 10px 16px; border-bottom: 1px solid #ddd; }
-        tr:hover { background-color: #f0f4f8; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background-color: #f4f6f8; padding: 40px; }
+        .header { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; }
+        .header h1 { font-size: 22px; font-weight: 500; color: #1a1a1a; }
+        .header p { font-size: 13px; color: #888; margin-top: 2px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+        .card { background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+        .card-top { display: flex; justify-content: space-between; align-items: center; }
+        .badge { font-size: 12px; padding: 3px 10px; border-radius: 6px; }
+        .badge-red { background: #fef2f2; color: #dc2626; }
+        .badge-blue { background: #eff6ff; color: #2563eb; }
+        .badge-green { background: #f0fdf4; color: #16a34a; }
+        .badge-purple { background: #faf5ff; color: #7c3aed; }
+        .tipo { font-size: 12px; color: #aaa; }
+        .nombre { font-size: 16px; font-weight: 500; color: #1a1a1a; }
+        .descripcion { font-size: 13px; color: #666; }
+        .vs-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; }
+        .equipo { font-size: 14px; font-weight: 500; color: #1a1a1a; }
+        .card-footer { border-top: 1px solid #f0f0f0; padding-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+        .card-footer span { font-size: 13px; color: #666; }
     </style>
 </head>
 <body>
-<h1>Lista de Eventos</h1>
-<table>
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Descripción</th>
-        <th>Fecha</th>
-        <th>Lugar</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="evento : ${eventos}">
-        <td th:text="${evento.id}"></td>
-        <td th:text="${evento.nombre}"></td>
-        <td th:text="${evento.descripcion}"></td>
-        <td th:text="${evento.fecha}"></td>
-        <td th:text="${evento.lugar}"></td>
-    </tr>
-    </tbody>
-</table>
+
+<div class="header">
+    <div>
+        <h1>Gestor de Eventos</h1>
+        <p>Próximos eventos 2026</p>
+    </div>
+</div>
+
+<div class="grid">
+    <div class="card" th:each="evento : ${eventos}">
+        <div class="card-top">
+            <span class="badge badge-blue">Evento</span>
+        </div>
+        <p class="nombre" th:text="${evento.nombre}"></p>
+        <p class="descripcion" th:text="${evento.descripcion}"></p>
+        <div class="card-footer">
+            <span>📅 <span th:text="${evento.fecha}"></span></span>
+            <span>📍 <span th:text="${evento.lugar}"></span></span>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
