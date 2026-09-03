@@ -1,7 +1,6 @@
 # Gestor de Eventos
 
-Aplicación web desarrollada con Spring Boot como proyecto
-acumulativo de Programación IV.
+Aplicación web desarrollada con Spring Boot como proyecto acumulativo de Programación IV.
 
 ## Tecnologías utilizadas
 
@@ -9,11 +8,14 @@ acumulativo de Programación IV.
 - Spring Boot 4.1
 - Spring MVC
 - Thymeleaf
+- AOP (Programación Orientada a Aspectos)
 - Maven
 
 ## Estructura del proyecto
 
 src/main/java/edu/instituto/gestor_eventos/
+├── aspect/
+│ └── LogAspect.java
 ├── controller/
 │ ├── EventoController.java
 │ ├── InscripcionController.java
@@ -68,16 +70,18 @@ http://localhost:8080/eventos
 - Vista dinámica con Thymeleaf (th:each, th:text)
 - Ruta funcional: /eventos
 
+### Semana 5 — Programación Orientada a Aspectos (AOP)
+- Dependencia aspectjweaver agregada al pom.xml
+- Paquete aspect creado
+- Clase LogAspect con @Aspect y @Component
+- Pointcut configurado sobre la capa de servicios
+- @Before y @After interceptando métodos del servicio
+- Logging transversal visible en consola al ejecutar /eventos
+
 ## Arquitectura
 
 Navegador → EventoController → EventoService → Evento → eventos.html
-
-
-## Criterios de la práctica Semana 4
-
-- @Controller con @GetMapping("/eventos")
-- Model para pasar datos a la vista
-- EventoService con método listar()
-- Plantilla eventos.html en src/main/resources/templates/
-- th:each y th:text para mostrar datos dinámicamente
-  
+↑
+LogAspect (AOP)
+>>> Iniciando metodo: listar
+>>> Finalizando metodo: listar
