@@ -11,9 +11,9 @@ public class EventoService {
     public List<Evento> listar() {
         return List.of(
                 new Evento(1L, "FC Barcelona vs Real Madrid", "El Clásico de la Liga Española", "2026-09-15", "Camp Nou, Barcelona"),
-                new Evento(2L, "Bad Bunny World Tour", "El conejo malo regresa a España", "2026-09-20", "Palau Sant Jordi, Barcelona"),
+                new Evento(2L, "Bad Bunny World Tour", "El conejo malo regresa a Bogotá", "2026-09-20", "Bogota, Estadio Nemesio el Campin"),
                 new Evento(3L, "Atlético vs FC Barcelona", "Jornada 3 de la Liga Española", "2026-09-27", "Metropolitano, Madrid"),
-                new Evento(4L, "Coldplay Music of the Spheres", "Noche mágica en el Olímpico", "2026-09-05", "Estadio Olímpico, Barcelona")
+                new Evento(4L, "Fuck News", "Camilo Sánchez y Camilo Pardo regresan al Movistar Arena con Fuck News", "2026-09-05", "Movistar Arena, Bogota")
         );
     }
 }
