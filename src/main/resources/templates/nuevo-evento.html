@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nuevo Evento</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background-color: #f4f6f8; padding: 40px; }
+        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; padding: 32px; border: 1px solid #e5e7eb; }
+        h1 { font-size: 22px; font-weight: 500; color: #1a1a1a; margin-bottom: 24px; }
+        .campo { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+        label { font-size: 13px; color: #444; font-weight: 500; }
+        input { padding: 10px 14px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; }
+        input:focus { outline: none; border-color: #2563eb; }
+        .error { font-size: 12px; color: #dc2626; margin-top: 2px; }
+        .botones { display: flex; gap: 10px; margin-top: 24px; }
+        button { padding: 10px 20px; border-radius: 8px; font-size: 14px; cursor: pointer; border: none; }
+        .btn-guardar { background: #2c3e50; color: white; }
+        .btn-cancelar { background: #f3f4f6; color: #444; border: 1px solid #d1d5db; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Registrar nuevo evento</h1>
+    <form th:action="@{/eventos/nuevo}" th:object="${eventoForm}" method="post">
+
+        <div class="campo">
+            <label>Nombre del evento</label>
+            <input type="text" th:field="*{nombre}" placeholder="Ej: Festival de Música"/>
+            <span class="error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></span>
+        </div>
+
+        <div class="campo">
+            <label>Descripción</label>
+            <input type="text" th:field="*{descripcion}" placeholder="Breve descripción del evento"/>
+            <span class="error" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></span>
+        </div>
+
+        <div class="campo">
+            <label>Fecha</label>
+            <input type="date" th:field="*{fecha}"/>
+            <span class="error" th:if="${#fields.hasErrors('fecha')}" th:errors="*{fecha}"></span>
+        </div>
+
+        <div class="campo">
+            <label>Lugar</label>
+            <input type="text" th:field="*{lugar}" placeholder="Ej: Auditorio Principal"/>
+            <span class="error" th:if="${#fields.hasErrors('lugar')}" th:errors="*{lugar}"></span>
+        </div>
+
+        <div class="botones">
+            <button type="submit" class="btn-guardar">Guardar evento</button>
+            <a href="/eventos"><button type="button" class="btn-cancelar">Cancelar</button></a>
+        </div>
+
+    </form>
+</div>
+</body>
+</html>
