@@ -22,6 +22,7 @@ src/main/java/edu/instituto/gestor_eventos/
 │ └── UsuarioController.java
 ├── model/
 │ ├── Evento.java
+│ ├── EventoForm.java
 │ ├── Inscripcion.java
 │ └── Usuario.java
 ├── repository/
@@ -43,6 +44,11 @@ src/main/java/edu/instituto/gestor_eventos/
 Abrir en el navegador:
 
 http://localhost:8080/eventos
+
+
+Para registrar un nuevo evento:
+
+http://localhost:8080/eventos/nuevo
 
 
 ## Avances por semana
@@ -77,6 +83,16 @@ http://localhost:8080/eventos
 - Pointcut configurado sobre la capa de servicios
 - @Before y @After interceptando métodos del servicio
 - Logging transversal visible en consola al ejecutar /eventos
+
+### Semana 7 — Spring MVC: Formularios y Validación
+- Clase EventoForm.java con validaciones @NotBlank
+- Formulario HTML nuevo-evento.html con Thymeleaf
+- Ruta GET /eventos/nuevo para mostrar el formulario
+- Ruta POST /eventos/nuevo para recibir y validar datos
+- Validación con @Valid y BindingResult
+- Mensajes de error en el formulario cuando hay campos vacíos
+- Registro exitoso redirige a /eventos
+- Flujo: Formulario → Validación → Controlador → Servicio → Redirección
 
 ## Arquitectura
 
