@@ -101,15 +101,14 @@ http://localhost:8080/h2-console
 - Registro exitoso redirige a /eventos
 - Flujo: Formulario → Validación → Controlador → Servicio → Redirección
 
-### Semana 8 — Persistencia con Spring Data JPA y H2
-- Dependencias Spring Data JPA y H2 agregadas al pom.xml
-- Entidad Evento.java con @Entity, @Id y @GeneratedValue
-- Repositorio EventoRepository con JpaRepository
-- Configuración de H2 en application.properties
-- EventoService actualizado para usar el repositorio
-- Datos persistidos en base de datos H2
-- Consola H2 disponible en /h2-console
-- Flujo: Formulario → Controlador → Servicio → Repositorio → Base de datos
+### Semana 8 — Persistencia con Spring Data JPA y MySQL
+- Dependencias `Spring Data JPA` y `mysql-connector-j` agregadas al `pom.xml`
+- Entidad `Evento.java` mapeada con `@Entity`, `@Id` y `@GeneratedValue`
+- Repositorio `EventoRepository` extendiendo de `JpaRepository`
+- Configuración del Datasource y conexión a MySQL (`gestoreventos_db`) en `application.properties`
+- Estrategia `spring.jpa.hibernate.ddl-auto=update` configurada para conservar la información de forma permanente en la base de datos
+- `EventoService` actualizado para delegar la persistencia al repositorio JPA
+- Flujo de datos completo: Formulario → Controlador → Servicio → Repositorio → Base de datos MySQL
 
 ## Arquitectura
 
