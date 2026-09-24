@@ -9,6 +9,8 @@ Aplicación web desarrollada con Spring Boot como proyecto acumulativo de Progra
 - Spring MVC
 - Thymeleaf
 - AOP (Programación Orientada a Aspectos)
+- Spring Data JPA
+- H2 Database
 - Maven
 
 ## Estructura del proyecto
@@ -49,6 +51,11 @@ http://localhost:8080/eventos
 Para registrar un nuevo evento:
 
 http://localhost:8080/eventos/nuevo
+
+
+Para ver la consola de base de datos H2:
+
+http://localhost:8080/h2-console
 
 
 ## Avances por semana
@@ -94,9 +101,19 @@ http://localhost:8080/eventos/nuevo
 - Registro exitoso redirige a /eventos
 - Flujo: Formulario → Validación → Controlador → Servicio → Redirección
 
+### Semana 8 — Persistencia con Spring Data JPA y H2
+- Dependencias Spring Data JPA y H2 agregadas al pom.xml
+- Entidad Evento.java con @Entity, @Id y @GeneratedValue
+- Repositorio EventoRepository con JpaRepository
+- Configuración de H2 en application.properties
+- EventoService actualizado para usar el repositorio
+- Datos persistidos en base de datos H2
+- Consola H2 disponible en /h2-console
+- Flujo: Formulario → Controlador → Servicio → Repositorio → Base de datos
+
 ## Arquitectura
 
-Navegador → EventoController → EventoService → Evento → eventos.html
+Navegador → EventoController → EventoService → EventoRepository → H2
 ↑
 LogAspect (AOP)
 >>> Iniciando metodo: listar
