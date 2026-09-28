@@ -94,7 +94,6 @@ http://localhost:8080/eventos/nuevo
 - Validación con @Valid y BindingResult
 - Mensajes de error en el formulario cuando hay campos vacíos
 - Registro exitoso redirige a /eventos
-- Flujo: Formulario → Validación → Controlador → Servicio → Redirección
 
 ### Semana 8 — Persistencia con Spring Data JPA y MySQL
 - Dependencias Spring Data JPA y mysql-connector-j agregadas al pom.xml
@@ -103,8 +102,17 @@ http://localhost:8080/eventos/nuevo
 - Configuración del Datasource y conexión a MySQL en application.properties
 - Estrategia spring.jpa.hibernate.ddl-auto=update configurada
 - EventoService actualizado para delegar la persistencia al repositorio JPA
-- CRUD completo: Crear, Listar, Editar y Eliminar eventos
 - Flujo: Formulario → Controlador → Servicio → Repositorio → MySQL
+
+### Semana 9 — CRUD completo con MySQL
+- Operación Crear: formulario nuevo-evento.html con validaciones
+- Operación Listar: listado de eventos desde MySQL en eventos.html
+- Operación Editar: formulario editar-evento.html con datos precargados
+- Operación Eliminar: eliminación directa desde el listado
+- Botones Editar y Eliminar en cada card del listado
+- Rutas GET y POST para editar: /eventos/editar/{id}
+- Ruta GET para eliminar: /eventos/eliminar/{id}
+- CRUD completo funcionando con persistencia real en MySQL
 
 ## Arquitectura
 
