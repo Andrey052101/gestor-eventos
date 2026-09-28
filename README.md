@@ -5,12 +5,12 @@ Aplicación web desarrollada con Spring Boot como proyecto acumulativo de Progra
 ## Tecnologías utilizadas
 
 - Java 21
-- Spring Boot 4.1
+- Spring Boot 3.2
 - Spring MVC
 - Thymeleaf
 - AOP (Programación Orientada a Aspectos)
 - Spring Data JPA
-- H2 Database
+- MySQL
 - Maven
 
 ## Estructura del proyecto
@@ -51,11 +51,6 @@ http://localhost:8080/eventos
 Para registrar un nuevo evento:
 
 http://localhost:8080/eventos/nuevo
-
-
-Para ver la consola de base de datos H2:
-
-http://localhost:8080/h2-console
 
 
 ## Avances por semana
@@ -102,17 +97,18 @@ http://localhost:8080/h2-console
 - Flujo: Formulario → Validación → Controlador → Servicio → Redirección
 
 ### Semana 8 — Persistencia con Spring Data JPA y MySQL
-- Dependencias `Spring Data JPA` y `mysql-connector-j` agregadas al `pom.xml`
-- Entidad `Evento.java` mapeada con `@Entity`, `@Id` y `@GeneratedValue`
-- Repositorio `EventoRepository` extendiendo de `JpaRepository`
-- Configuración del Datasource y conexión a MySQL (`gestoreventos_db`) en `application.properties`
-- Estrategia `spring.jpa.hibernate.ddl-auto=update` configurada para conservar la información de forma permanente en la base de datos
-- `EventoService` actualizado para delegar la persistencia al repositorio JPA
-- Flujo de datos completo: Formulario → Controlador → Servicio → Repositorio → Base de datos MySQL
+- Dependencias Spring Data JPA y mysql-connector-j agregadas al pom.xml
+- Entidad Evento.java mapeada con @Entity, @Id y @GeneratedValue
+- Repositorio EventoRepository extendiendo de JpaRepository
+- Configuración del Datasource y conexión a MySQL en application.properties
+- Estrategia spring.jpa.hibernate.ddl-auto=update configurada
+- EventoService actualizado para delegar la persistencia al repositorio JPA
+- CRUD completo: Crear, Listar, Editar y Eliminar eventos
+- Flujo: Formulario → Controlador → Servicio → Repositorio → MySQL
 
 ## Arquitectura
 
-Navegador → EventoController → EventoService → EventoRepository → H2
+Navegador → EventoController → EventoService → EventoRepository → MySQL
 ↑
 LogAspect (AOP)
 >>> Iniciando metodo: listar
