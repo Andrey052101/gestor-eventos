@@ -27,4 +27,22 @@ public class EventoService {
         evento.setLugar(form.getLugar());
         eventoRepository.save(evento);
     }
+
+    public Evento buscarPorId(Long id) {
+        return eventoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Evento no encontrado"));
+    }
+
+    public void actualizar(Long id, Evento eventoActualizado) {
+        Evento evento = buscarPorId(id);
+        evento.setNombre(eventoActualizado.getNombre());
+        evento.setDescripcion(eventoActualizado.getDescripcion());
+        evento.setFecha(eventoActualizado.getFecha());
+        evento.setLugar(eventoActualizado.getLugar());
+        eventoRepository.save(evento);
+    }
+
+    public void eliminar(Long id) {
+        eventoRepository.deleteById(id);
+    }
 }
