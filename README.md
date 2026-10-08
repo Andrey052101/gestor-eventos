@@ -114,6 +114,34 @@ http://localhost:8080/eventos/nuevo
 - Ruta GET para eliminar: /eventos/eliminar/{id}
 - CRUD completo funcionando con persistencia real en MySQL
 
+## Semana 10 – Validaciones, Búsqueda, Paginación y Relaciones
+
+En esta fase del proyecto se han implementado mejoras clave en la arquitectura y la interfaz de usuario del Gestor de Eventos, cumpliendo con los requerimientos de la Actividad de la Semana 10:
+
+### Características Implementadas
+1. **Validaciones de Formularios:**
+    - Incorporación de anotaciones de validación (`@NotBlank`, `@NotNull`, etc.) en las entidades.
+    - Uso de `@Valid` y `BindingResult` en el controlador para interceptar datos incorrectos o vacíos.
+    - Mensajes de error personalizados y destacados en color rojo en los formularios de creación y edición.
+
+2. **Sistema de Búsqueda:**
+    - Búsqueda dinámica de eventos por nombre utilizando consultas derivadas (`findByNombreContainingIgnoreCase`)[cite: 2].
+    - Filtrado inteligente que soporta coincidencias parciales sin importar mayúsculas o minúsculas.
+    - Botón de limpieza para restablecer la vista completa del listado.
+
+3. **Paginación Dinámica:**
+    - Distribución de registros por bloques (6 tarjetas por página) utilizando `Pageable` y `PageRequest`[cite: 2].
+    - Controles de navegación profesionales (Anterior, Siguiente y numeración directa de páginas).
+    - Manejo de estados vacíos cuando una categoría o búsqueda no arroja resultados.
+
+4. **Relación entre Entidades:**
+    - Configuración de una relación JPA `@ManyToOne` entre la entidad `Evento` y `Categoria`.
+    - Selector dinámico de categorías integrado de forma fluida en los formularios del sistema.
+
+5. **Mensajes al Usuario y Redireccionamiento:**
+    - Uso de `RedirectAttributes` para enviar mensajes flash de éxito tras guardar o eliminar registros[cite: 2].
+    - Patrón de redirección Post-Redirect-Get para evitar el reenvío duplicado de formularios.
+    - Modal de confirmación flotante moderno para la eliminación segura de registros.
 ## Arquitectura
 
 Navegador → EventoController → EventoService → EventoRepository → MySQL
