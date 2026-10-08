@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel de Gestión de Eventos</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+<body>
+
+<div class="main-container">
+
+    <div class="header-container">
+        <div class="header-title">
+            <h1>Gestor de Eventos</h1>
+            <p>Administración y agenda general de eventos programados</p>
+        </div>
+        <a th:href="@{/eventos/nuevo}" class="btn-nuevo">+ Nuevo evento</a>
+    </div>
+
+    <div th:if="${mensajeExito}" class="mensaje">
+        <p th:text="${mensajeExito}" style="margin:0;"></p>
+    </div>
+
+    <div class="toolbar">
+        <div class="categorias-nav">
+            <a th:href="@{/eventos}" class="cat-btn" th:classappend="${categoriaId == null and (buscar == null or buscar == '')} ? 'active'">Todos</a>
+            <a th:each="c : ${categorias}" th:href="@{/eventos(categoriaId=${c.id})}" class="cat-btn" th:classappend="${categoriaId == c.id} ? 'active'" th:text="${c.nombre}">Categoría</a>
+        </div>
+
+        <form th:action="@{/eventos}" method="get" class="search-container">
+            <input type="text" name="buscar" th:value="${buscar}" placeholder="Buscar por nombre..." />
+            <button type="submit">Buscar</button>
+            <a th:href="@{/eventos}" th:if="${buscar != null and buscar != ''}">Limpiar</a>
+        </form>
+    </div>
+
+    <div class="grid-container">
+        <div th:if="${eventos.empty}" style="grid-column: 1 / -1; text-align: center; padding: 40px; background: white; border-radius: 8px; border: 1px solid #e2e8f0; color: #64748b;">
+            <p style="margin:0; font-size: 14px;">No se encontraron eventos registrados.</p>
+        </div>
+
+        <div class="card" th:each="evento : ${eventos}">
+            <div>
+                <span class="card-badge" th:text="${evento.categoria != null ? evento.categoria.nombre : 'General'}">Categoría</span>
+                <h3 th:text="${evento.nombre}">Nombre</h3>
+                <p th:text="${evento.descripcion}">Descripción</p>
+                <p><strong>Fecha:</strong> <span th:text="${evento.fecha}">Fecha</span></p>
+                <p><strong>Lugar:</strong> <span th:text="${evento.lugar}">Lugar</span></p>
+            </div>
+
+            <div class="card-footer">
+                <a th:href="@{/eventos/editar/{id}(id=${evento.id})}" class="btn-editar">Editar</a>
+                <form th:action="@{/eventos/{id}/eliminar(id=${evento.id})}" method="post" style="flex: 1; display: flex;" onsubmit="abrirModalEliminar(event, this);">
+                    <button type="submit" class="btn-eliminar" style="width: 100%;">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="pagination-container" th:if="${totalPages > 0}">
+        <div class="pagination-info">
+            Página <span th:text="${currentPage + 1}">1</span> de <span th:text="${totalPages}">1</span>
+        </div>
+        <div class="pagination-buttons">
+            <a th:href="@{/eventos(page=${currentPage - 1}, buscar=${buscar}, categoriaId=${categoriaId})}" th:classappend="${currentPage == 0} ? 'disabled'">Anterior</a>
+            <th:block th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                <a th:href="@{/eventos(page=${i}, buscar=${buscar}, categoriaId=${categoriaId})}" th:text="${i + 1}" th:classappend="${i == currentPage} ? 'active-page'">1</a>
+            </th:block>
+            <a th:href="@{/eventos(page=${currentPage + 1}, buscar=${buscar}, categoriaId=${categoriaId})}" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">Siguiente</a>
+        </div>
+    </div>
+
+</div>
+
+<!-- Modal de Confirmación de Eliminación Profesional -->
+<div id="modalEliminar" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.4); justify-content: center; align-items: center;">
+    <div style="background: white; padding: 25px; border-radius: 8px; width: 100%; max-width: 400px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center;">
+        <h3 style="margin-top: 0; color: #1e293b; font-size: 18px;">Confirmar eliminación</h3>
+        <p style="color: #64748b; font-size: 14px; margin-bottom: 20px;">¿Estás seguro de que deseas eliminar este evento del sistema? Esta acción no se puede deshacer.</p>
+        <div style="display: flex; gap: 10px; justify-content: center;">
+            <button type="button" onclick="cerrarModal()" style="padding: 8px 16px; background-color: #f1f5f9; color: #475569; border: 1px solid #cbd5e0; border-radius: 6px; font-weight: 600; cursor: pointer;">Cancelar</button>
+            <button type="button" id="btnConfirmarEliminar" style="padding: 8px 16px; background-color: #dc2626; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">Eliminar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let formACancelar = null;
+
+    function abrirModalEliminar(event, form) {
+        event.preventDefault();
+        formACancelar = form;
+        document.getElementById('modalEliminar').style.display = 'flex';
+    }
+
+    function cerrarModal() {
+        document.getElementById('modalEliminar').style.display = 'none';
+        formACancelar = null;
+    }
+
+    document.getElementById('btnConfirmarEliminar').addEventListener('click', function() {
+        if (formACancelar) {
+            formACancelar.submit();
+        }
+    });
+</script>
+
+</body>
+</html>

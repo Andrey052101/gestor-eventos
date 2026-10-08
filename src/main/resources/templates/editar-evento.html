@@ -1,59 +1,57 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Editar Evento</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: Arial, sans-serif; background-color: #f4f6f8; padding: 40px; }
-        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; padding: 32px; border: 1px solid #e5e7eb; }
-        h1 { font-size: 22px; font-weight: 500; color: #1a1a1a; margin-bottom: 24px; }
-        .campo { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
-        label { font-size: 13px; color: #444; font-weight: 500; }
-        input { padding: 10px 14px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; }
-        input:focus { outline: none; border-color: #2563eb; }
-        .error { font-size: 12px; color: #dc2626; margin-top: 2px; }
-        .botones { display: flex; gap: 10px; margin-top: 24px; }
-        button { padding: 10px 20px; border-radius: 8px; font-size: 14px; cursor: pointer; border: none; }
-        .btn-guardar { background: #2c3e50; color: white; }
-        .btn-cancelar { background: #f3f4f6; color: #444; border: 1px solid #d1d5db; }
-    </style>
+    <title>Gestión de Evento</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
 </head>
 <body>
-<div class="container">
-    <h1>Editar evento</h1>
-    <form th:action="@{/eventos/editar/{id}(id=${evento.id})}" th:object="${evento}" method="post">
 
-        <div class="campo">
+<div class="form-container">
+    <h2 th:text="${evento.id == null} ? 'Registrar nuevo evento' : 'Editar evento'">Registrar nuevo evento</h2>
+
+    <form th:action="@{/eventos/guardar}" th:object="${evento}" method="post">
+        <input type="hidden" th:field="*{id}" />
+
+        <div class="form-group">
             <label>Nombre del evento</label>
-            <input type="text" th:field="*{nombre}"/>
-            <span class="error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></span>
+            <input type="text" th:field="*{nombre}" placeholder="Ej: Festival de Música" />
+            <span class="error-msg" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></span>
         </div>
 
-        <div class="campo">
+        <div class="form-group">
             <label>Descripción</label>
-            <input type="text" th:field="*{descripcion}"/>
-            <span class="error" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></span>
+            <textarea th:field="*{descripcion}" placeholder="Breve descripción del evento"></textarea>
+            <span class="error-msg" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></span>
         </div>
 
-        <div class="campo">
+        <div class="form-group">
             <label>Fecha</label>
-            <input type="date" th:field="*{fecha}"/>
-            <span class="error" th:if="${#fields.hasErrors('fecha')}" th:errors="*{fecha}"></span>
+            <input type="date" th:field="*{fecha}" />
+            <span class="error-msg" th:if="${#fields.hasErrors('fecha')}" th:errors="*{fecha}"></span>
         </div>
 
-        <div class="campo">
+        <div class="form-group">
             <label>Lugar</label>
-            <input type="text" th:field="*{lugar}"/>
-            <span class="error" th:if="${#fields.hasErrors('lugar')}" th:errors="*{lugar}"></span>
+            <input type="text" th:field="*{lugar}" placeholder="Ej: Auditorio Principal" />
+            <span class="error-msg" th:if="${#fields.hasErrors('lugar')}" th:errors="*{lugar}"></span>
         </div>
 
-        <div class="botones">
-            <button type="submit" class="btn-guardar">Guardar cambios</button>
-            <a href="/eventos"><button type="button" class="btn-cancelar">Cancelar</button></a>
+        <div class="form-group">
+            <label>Categoría</label>
+            <select th:field="*{categoria}">
+                <option value="">-- Selecciona una categoría --</option>
+                <option th:each="c : ${categorias}" th:value="${c.id}" th:text="${c.nombre}"></option>
+            </select>
+            <span class="error-msg" th:if="${#fields.hasErrors('categoria')}" th:errors="*{categoria}"></span>
         </div>
 
+        <div class="btn-container">
+            <button type="submit" class="btn-submit">Guardar evento</button>
+            <a th:href="@{/eventos}" class="btn-cancel">Cancelar</a>
+        </div>
     </form>
 </div>
+
 </body>
 </html>

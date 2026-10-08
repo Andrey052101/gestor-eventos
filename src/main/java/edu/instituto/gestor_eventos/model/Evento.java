@@ -1,30 +1,36 @@
-package edu.instituto.gestor_eventos.model;
+package edu.instituto.gestoreventos.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
 
 @Entity
+@Table(name = "evento")
 public class Evento {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank(message = "El nombre del evento es obligatorio")
     private String nombre;
+
+    @NotBlank(message = "La descripción no puede estar vacía")
     private String descripcion;
-    private String fecha;
+
+    @NotNull(message = "La fecha es obligatoria")
+    private LocalDate fecha;
+
+    @NotBlank(message = "El lugar es obligatorio")
     private String lugar;
 
-    public Evento() {}
+    @NotNull(message = "La categoría es obligatoria")
+    @ManyToOne
+    @JoinColumn(name = "categoria_id")
+    private Categoria categoria;
 
-    public Evento(Long id, String nombre, String descripcion, String fecha, String lugar) {
-        this.id = id;
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.fecha = fecha;
-        this.lugar = lugar;
-    }
+    public Evento() {}
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -35,9 +41,12 @@ public class Evento {
     public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 
-    public String getFecha() { return fecha; }
-    public void setFecha(String fecha) { this.fecha = fecha; }
+    public LocalDate getFecha() { return fecha; }
+    public void setFecha(LocalDate fecha) { this.fecha = fecha; }
 
     public String getLugar() { return lugar; }
     public void setLugar(String lugar) { this.lugar = lugar; }
+
+    public Categoria getCategoria() { return categoria; }
+    public void setCategoria(Categoria categoria) { this.categoria = categoria; }
 }

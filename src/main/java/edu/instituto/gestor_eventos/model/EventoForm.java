@@ -1,13 +1,14 @@
 package edu.instituto.gestor_eventos.model;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class EventoForm {
 
     @NotBlank(message = "El nombre es obligatorio")
     private String nombre;
 
-    @NotBlank(message = "La descripcion es obligatoria")
+    @NotBlank(message = "La descripción es obligatoria")
     private String descripcion;
 
     @NotBlank(message = "La fecha es obligatoria")
@@ -15,6 +16,11 @@ public class EventoForm {
 
     @NotBlank(message = "El lugar es obligatorio")
     private String lugar;
+
+    @NotNull(message = "Debes seleccionar una categoría")
+    private Long categoriaId;
+
+    public EventoForm() {}
 
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
@@ -27,4 +33,7 @@ public class EventoForm {
 
     public String getLugar() { return lugar; }
     public void setLugar(String lugar) { this.lugar = lugar; }
+
+    public Long getCategoriaId() { return categoriaId; }
+    public void setCategoriaId(Long categoriaId) { this.categoriaId = categoriaId; }
 }

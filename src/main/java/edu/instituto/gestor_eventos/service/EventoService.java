@@ -1,9 +1,11 @@
-package edu.instituto.gestor_eventos.service;
+package edu.instituto.gestoreventos.service;
 
-import edu.instituto.gestor_eventos.model.Evento;
-import edu.instituto.gestor_eventos.model.EventoForm;
-import edu.instituto.gestor_eventos.repository.EventoRepository;
+import edu.instituto.gestoreventos.model.Evento;
+import edu.instituto.gestoreventos.repository.EventoRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
@@ -15,31 +17,32 @@ public class EventoService {
         this.eventoRepository = eventoRepository;
     }
 
+    // Listar normal (sin paginación, por si se usa en otro lado)
     public List<Evento> listar() {
         return eventoRepository.findAll();
     }
 
-    public void guardar(EventoForm form) {
-        Evento evento = new Evento();
-        evento.setNombre(form.getNombre());
-        evento.setDescripcion(form.getDescripcion());
-        evento.setFecha(form.getFecha());
-        evento.setLugar(form.getLugar());
-        eventoRepository.save(evento);
+    // Listar con Paginación
+    public Page<Evento> listarPaginado(Pageable pageable) {
+        return eventoRepository.findAll(pageable);
+    }
+
+    // Buscar por Nombre con Paginación
+    public Page<Evento> buscarPorNombre(String nombre, Pageable pageable) {
+        return eventoRepository.findByNombreContainingIgnoreCase(nombre, pageable);
+    }
+
+    // Buscar por Categoría con Paginación
+    public Page<Evento> buscarPorCategoria(Long categoriaId, Pageable pageable) {
+        return eventoRepository.findByCategoriaId(categoriaId, pageable);
     }
 
     public Evento buscarPorId(Long id) {
-        return eventoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Evento no encontrado"));
+        return eventoRepository.findById(id).orElse(null);
     }
 
-    public void actualizar(Long id, Evento eventoActualizado) {
-        Evento evento = buscarPorId(id);
-        evento.setNombre(eventoActualizado.getNombre());
-        evento.setDescripcion(eventoActualizado.getDescripcion());
-        evento.setFecha(eventoActualizado.getFecha());
-        evento.setLugar(eventoActualizado.getLugar());
-        eventoRepository.save(evento);
+    public Evento guardar(Evento evento) {
+        return eventoRepository.save(evento);
     }
 
     public void eliminar(Long id) {

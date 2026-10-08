@@ -1,69 +1,92 @@
-package edu.instituto.gestor_eventos.controller;
+package edu.instituto.gestoreventos.controller;
 
-import edu.instituto.gestor_eventos.model.Evento;
-import edu.instituto.gestor_eventos.model.EventoForm;
-import edu.instituto.gestor_eventos.service.EventoService;
+import edu.instituto.gestoreventos.model.Evento;
+import edu.instituto.gestoreventos.service.CategoriaService;
+import edu.instituto.gestoreventos.service.EventoService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
+@RequestMapping("/eventos")
 public class EventoController {
 
     private final EventoService eventoService;
+    private final CategoriaService categoriaService;
 
-    public EventoController(EventoService eventoService) {
+    public EventoController(EventoService eventoService, CategoriaService categoriaService) {
         this.eventoService = eventoService;
+        this.categoriaService = categoriaService;
     }
 
-    @GetMapping("/eventos")
-    public String listarEventos(Model model) {
-        model.addAttribute("eventos", eventoService.listar());
-        return "eventos";
+    @GetMapping
+    public String listar(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(required = false) String buscar,
+            @RequestParam(required = false) Long categoriaId,
+            Model model) {
+
+        int pageSize = 6;
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<Evento> paginaEventos;
+
+        if (buscar != null && !buscar.trim().isEmpty()) {
+            paginaEventos = eventoService.buscarPorNombre(buscar, pageable);
+        } else if (categoriaId != null) {
+            paginaEventos = eventoService.buscarPorCategoria(categoriaId, pageable);
+        } else {
+            paginaEventos = eventoService.listarPaginado(pageable);
+        }
+
+        model.addAttribute("eventos", paginaEventos.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", paginaEventos.getTotalPages());
+        model.addAttribute("buscar", buscar);
+        model.addAttribute("categoriaId", categoriaId);
+        model.addAttribute("categorias", categoriaService.listar());
+
+        return "index";
     }
 
-    @GetMapping("/eventos/nuevo")
-    public String mostrarFormulario(Model model) {
-        model.addAttribute("eventoForm", new EventoForm());
+    @GetMapping("/nuevo")
+    public String nuevo(Model model) {
+        model.addAttribute("evento", new Evento());
+        model.addAttribute("categorias", categoriaService.listar());
         return "nuevo-evento";
     }
 
-    @PostMapping("/eventos/nuevo")
-    public String guardarEvento(@Valid @ModelAttribute("eventoForm") EventoForm form,
-                                BindingResult result) {
-        if (result.hasErrors()) {
-            return "nuevo-evento";
-        }
-        eventoService.guardar(form);
-        return "redirect:/eventos";
-    }
-
-    @GetMapping("/eventos/editar/{id}")
-    public String mostrarEditar(@PathVariable Long id, Model model) {
+    @GetMapping("/editar/{id}")
+    public String editar(@PathVariable Long id, Model model) {
         Evento evento = eventoService.buscarPorId(id);
         model.addAttribute("evento", evento);
+        model.addAttribute("categorias", categoriaService.listar());
         return "editar-evento";
     }
 
-    @PostMapping("/eventos/editar/{id}")
-    public String actualizarEvento(@PathVariable Long id,
-                                   @Valid @ModelAttribute("evento") Evento evento,
-                                   BindingResult result) {
+    @PostMapping("/guardar")
+    public String guardar(@Valid @ModelAttribute("evento") Evento evento,
+                          BindingResult result,
+                          Model model,
+                          RedirectAttributes ra) {
         if (result.hasErrors()) {
-            return "editar-evento";
+            model.addAttribute("categorias", categoriaService.listar());
+            return evento.getId() == null ? "nuevo-evento" : "editar-evento";
         }
-        eventoService.actualizar(id, evento);
+        eventoService.guardar(evento);
+        ra.addFlashAttribute("mensajeExito", "¡Evento guardado con éxito!");
         return "redirect:/eventos";
     }
 
-    @GetMapping("/eventos/eliminar/{id}")
-    public String eliminarEvento(@PathVariable Long id) {
+    @PostMapping("/{id}/eliminar")
+    public String eliminar(@PathVariable Long id, RedirectAttributes ra) {
         eventoService.eliminar(id);
+        ra.addFlashAttribute("mensajeExito", "Evento eliminado correctamente");
         return "redirect:/eventos";
     }
 }

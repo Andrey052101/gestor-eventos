@@ -1,4 +1,4 @@
-package edu.instituto.gestor_eventos;
+package edu.instituto.gestoreventos;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,5 +9,4 @@ public class GestorEventosApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(GestorEventosApplication.class, args);
 	}
-
 }
