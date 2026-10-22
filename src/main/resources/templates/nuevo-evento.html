@@ -2,13 +2,12 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Gestión de Evento</title>
+    <title>Nuevo Evento</title>
     <link rel="stylesheet" th:href="@{/css/estilos.css}">
 </head>
 <body>
-
 <div class="form-container">
-    <h2 th:text="${evento.id == null} ? 'Registrar nuevo evento' : 'Editar evento'">Registrar nuevo evento</h2>
+    <h2>Nuevo Evento</h2>
 
     <form th:action="@{/eventos/guardar}" th:object="${evento}" method="post">
         <input type="hidden" th:field="*{id}" />
@@ -27,7 +26,7 @@
 
         <div class="form-group">
             <label>Fecha</label>
-            <input type="date" th:field="*{fecha}" />
+            <input type="text" th:field="*{fecha}" placeholder="Ej: 2026-11-10" />
             <span class="error-msg" th:if="${#fields.hasErrors('fecha')}" th:errors="*{fecha}"></span>
         </div>
 
@@ -43,7 +42,6 @@
                 <option value="">-- Selecciona una categoría --</option>
                 <option th:each="c : ${categorias}" th:value="${c.id}" th:text="${c.nombre}"></option>
             </select>
-            <span class="error-msg" th:if="${#fields.hasErrors('categoria')}" th:errors="*{categoria}"></span>
         </div>
 
         <div class="btn-container">
@@ -52,6 +50,5 @@
         </div>
     </form>
 </div>
-
 </body>
 </html>

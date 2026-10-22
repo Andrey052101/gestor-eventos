@@ -1,9 +1,7 @@
-package edu.instituto.gestoreventos.model;
+package edu.instituto.gestor_eventos.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import java.time.LocalDate;
 
 @Entity
 @Table(name = "evento")
@@ -13,19 +11,18 @@ public class Evento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "El nombre del evento es obligatorio")
+    @NotBlank(message = "El nombre es obligatorio")
     private String nombre;
 
-    @NotBlank(message = "La descripción no puede estar vacía")
+    @NotBlank(message = "La descripción es obligatoria")
     private String descripcion;
 
-    @NotNull(message = "La fecha es obligatoria")
-    private LocalDate fecha;
+    @NotBlank(message = "La fecha es obligatoria")
+    private String fecha;
 
     @NotBlank(message = "El lugar es obligatorio")
     private String lugar;
 
-    @NotNull(message = "La categoría es obligatoria")
     @ManyToOne
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
@@ -41,8 +38,8 @@ public class Evento {
     public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 
-    public LocalDate getFecha() { return fecha; }
-    public void setFecha(LocalDate fecha) { this.fecha = fecha; }
+    public String getFecha() { return fecha; }
+    public void setFecha(String fecha) { this.fecha = fecha; }
 
     public String getLugar() { return lugar; }
     public void setLugar(String lugar) { this.lugar = lugar; }

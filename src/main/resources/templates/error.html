@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error</title>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .error-card {
+            background: #fff;
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+            padding: 56px 48px;
+            max-width: 480px;
+            width: 90%;
+            text-align: center;
+        }
+        .icono-circulo {
+            width: 90px; height: 90px;
+            background: #fde8e8;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 24px;
+        }
+        .codigo { font-size: 72px; font-weight: 800; color: #e53e3e; line-height: 1; }
+        .btn-volver {
+            background: #16a34a; border-color: #16a34a;
+            padding: 12px 36px; font-size: 16px; font-weight: 600;
+            border-radius: 8px;
+        }
+        .btn-volver:hover { background: #15803d; border-color: #15803d; }
+    </style>
+</head>
+<body>
+
+<div class="error-card">
+
+    <div class="icono-circulo">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+                  fill="#e53e3e"/>
+            <line x1="12" y1="9" x2="12" y2="13" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="12" cy="17" r="1" fill="white"/>
+        </svg>
+    </div>
+
+    <div class="codigo mb-2" th:text="${codigo}">404</div>
+    <h4 class="fw-bold mb-2" th:text="${titulo}">Página no encontrada</h4>
+    <p class="mb-1 fw-semibold text-danger" th:text="${mensaje}">La página solicitada no existe.</p>
+    <p class="text-muted mb-4" th:text="${descripcion}">Comprueba la dirección e intenta otra vez.</p>
+
+    <a href="/eventos" class="btn btn-success btn-volver text-white">← Volver a Eventos</a>
+
+</div>
+
+</body>
+</html>

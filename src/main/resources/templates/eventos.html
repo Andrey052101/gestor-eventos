@@ -2,49 +2,64 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestor de Eventos</title>
     <link rel="stylesheet" th:href="@{/css/estilos.css}"/>
 </head>
 <body>
 <div class="container">
-    <h1>Gestor de Eventos</h1>
-    <div th:if="${ok}" class="mensaje-ok" th:text="${ok}"></div>
 
-    <div class="busqueda-bar">
-        <form action="/eventos" method="get" class="busqueda-form">
-            <input type="text" name="buscar" th:value="${buscar}" placeholder="Buscar evento por nombre..."/>
-            <button type="submit">Buscar</button>
-            <a href="/eventos" class="btn-limpiar">Actualizar lista</a>
+    <!-- Barra superior con usuario y botón cerrar sesión -->
+    <div class="barra-usuario" th:if="${session.usuario != null}">
+        <span>👤 Usuario activo: <strong th:text="${session.usuario}"></strong></span>
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit" class="btn-salir">Cerrar sesión</button>
         </form>
-        <a href="/eventos/nuevo" class="btn-nuevo">+ Nuevo Evento</a>
     </div>
 
+    <h1>Gestor de Eventos</h1>
+
+    <!-- Selector de tema claro/oscuro -->
+    <div class="selector-tema">
+        <span>Tema visual:</span>
+        <form th:action="@{/preferencia}" method="post" style="display:inline;">
+            <button type="submit" name="tema" value="claro" class="btn-tema">☀ Claro</button>
+            <button type="submit" name="tema" value="oscuro" class="btn-tema">🌙 Oscuro</button>
+        </form>
+    </div>
+
+    <!-- Mensaje de éxito -->
+    <div th:if="${ok}" class="mensaje-ok" th:text="${ok}"></div>
+
+    <!-- Búsqueda por nombre -->
+    <form action="/eventos" method="get" class="busqueda">
+        <input type="text" name="buscar" th:value="${buscar}" placeholder="Buscar evento por nombre..."/>
+        <button type="submit">Buscar</button>
+        <a href="/eventos" class="btn-limpiar">Limpiar</a>
+    </form>
+
+    <a href="/eventos/nuevo" class="btn-nuevo">+ Nuevo Evento</a>
+
+    <!-- Lista de eventos -->
     <div class="card-grid">
         <div class="card" th:each="evento : ${eventos}">
-            <div>
-                <h2 th:text="${evento.nombre}"></h2>
-                <p th:text="${evento.descripcion}"></p>
-                <p><strong>Categoría:</strong> <span th:text="${evento.categoria != null ? evento.categoria.nombre : 'Sin categoría'}"></span></p>
-                <p><strong>Fecha:</strong> <span th:text="${evento.fecha}"></span></p>
-                <p><strong>Lugar:</strong> <span th:text="${evento.lugar}"></span></p>
-            </div>
+            <h2 th:text="${evento.nombre}"></h2>
+            <p th:text="${evento.descripcion}"></p>
+            <p><strong>Fecha:</strong> <span th:text="${evento.fecha}"></span></p>
+            <p><strong>Lugar:</strong> <span th:text="${evento.lugar}"></span></p>
             <div class="card-acciones">
                 <a th:href="@{/eventos/{id}/editar(id=${evento.id})}" class="btn-editar">Editar</a>
                 <form th:action="@{/eventos/{id}/eliminar(id=${evento.id})}" method="post">
-                    <button type="submit" class="btn-eliminar" onclick="return confirm('¿Seguro que deseas eliminar este evento?')">Eliminar</button>
+                    <button type="submit" class="btn-eliminar"
+                            onclick="return confirm('¿Seguro que deseas eliminar este evento?')">
+                        Eliminar
+                    </button>
                 </form>
             </div>
         </div>
     </div>
 
-    <p th:if="${#lists.isEmpty(eventos)}" style="text-align: center; color: #94a3b8; margin-top: 40px;">No hay eventos registrados.</p>
+    <p th:if="${#lists.isEmpty(eventos)}" class="vacio">No hay eventos registrados.</p>
 
-    <div class="paginacion" th:if="${totalPaginas > 1}">
-        <a th:if="${paginaActual > 0}" th:href="@{/eventos(page=${paginaActual - 1}, buscar=${buscar})}">← Anterior</a>
-        <span>Página <strong th:text="${paginaActual + 1}">1</strong> de <strong th:text="${totalPaginas}">1</strong></span>
-        <a th:if="${paginaActual + 1 < totalPaginas}" th:href="@{/eventos(page=${paginaActual + 1}, buscar=${buscar})}">Siguiente →</a>
-    </div>
 </div>
 </body>
 </html>

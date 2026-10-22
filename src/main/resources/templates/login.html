@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión – Gestor de Eventos</title>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+        }
+        .btn-primary {
+            background: #2563eb;
+            border-color: #2563eb;
+        }
+        .btn-primary:hover {
+            background: #2563eb;
+            border-color: #2563eb;
+        }
+        .brand { color: #1a202c; font-weight: 800; }
+        .form-label .oblig { color: #dc2626; }
+    </style>
+</head>
+<body>
+
+<div class="card p-5" style="width: 100%; max-width: 440px;">
+
+    <h2 class="brand mb-1">Gestor de Eventos</h2>
+    <h5 class="text-muted mb-4">Iniciar Sesión</h5>
+
+    <!-- Mensajes -->
+    <div th:if="${error}" class="alert alert-danger py-2" th:text="${error}"></div>
+    <div th:if="${ok}" class="alert alert-success py-2" th:text="${ok}"></div>
+
+    <form th:action="@{/login}" method="post">
+
+        <div class="mb-3">
+            <label for="nombre" class="form-label fw-semibold">
+                Usuario <span class="oblig">*</span>
+            </label>
+            <input type="text" id="nombre" name="nombre"
+                   class="form-control form-control-lg"
+                   placeholder="Tu nombre de usuario" autofocus required/>
+        </div>
+
+        <div class="mb-4">
+            <label for="contrasena" class="form-label fw-semibold">
+                Contraseña <span class="oblig">*</span>
+            </label>
+            <input type="password" id="contrasena" name="contrasena"
+                   class="form-control form-control-lg"
+                   placeholder="Tu contraseña" required/>
+        </div>
+
+        <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary btn-lg">Entrar</button>
+            <a href="/registro" class="btn btn-outline-secondary btn-lg">Crear cuenta</a>
+        </div>
+
+    </form>
+</div>
+
+</body>
+</html>

@@ -1,7 +1,6 @@
 package edu.instituto.gestor_eventos.model;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 public class EventoForm {
 
@@ -17,9 +16,6 @@ public class EventoForm {
     @NotBlank(message = "El lugar es obligatorio")
     private String lugar;
 
-    @NotNull(message = "Debes seleccionar una categoría")
-    private Long categoriaId;
-
     public EventoForm() {}
 
     public String getNombre() { return nombre; }
@@ -33,7 +29,4 @@ public class EventoForm {
 
     public String getLugar() { return lugar; }
     public void setLugar(String lugar) { this.lugar = lugar; }
-
-    public Long getCategoriaId() { return categoriaId; }
-    public void setCategoriaId(Long categoriaId) { this.categoriaId = categoriaId; }
 }

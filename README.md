@@ -1,8 +1,8 @@
 # Gestor de Eventos
 
-Aplicación web desarrollada con Spring Boot como proyecto acumulativo de Programación IV.
+Aplicación web gestora de eventos desarrollada con Spring Boot como proyecto.
 
-## Tecnologías utilizadas
+## Utilizado
 
 - Java 21
 - Spring Boot 3.2
@@ -45,15 +45,15 @@ src/main/java/edu/instituto/gestor_eventos/
 
 Abrir en el navegador:
 
-http://localhost:8080/eventos
+(http://localhost:8080/registro)
 
 
 Para registrar un nuevo evento:
 
-http://localhost:8080/eventos/nuevo
+(http://localhost:8080/eventos/nuevo)
 
 
-## Avances por semana
+## Avances:
 
 ### Semana 1 — Configuración inicial
 - Creación del proyecto con Spring Initializr
@@ -142,10 +142,23 @@ En esta fase del proyecto se han implementado mejoras clave en la arquitectura y
     - Uso de `RedirectAttributes` para enviar mensajes flash de éxito tras guardar o eliminar registros[cite: 2].
     - Patrón de redirección Post-Redirect-Get para evitar el reenvío duplicado de formularios.
     - Modal de confirmación flotante moderno para la eliminación segura de registros.
-## Arquitectura
 
+## Semana 11 – Sesiones, Cookies y Manejo de Errores
+
+### Funcionalidades implementadas
+
+- **Inicio de sesión** con `HttpSession` (nombre, contraseña)
+- **Cierre de sesión** que invalida la sesión
+- **Registro de usuarios** con validación
+- **Roles**: ADMIN puede crear/editar/eliminar · USER solo visualiza
+- **Interceptor** (`LoginInterceptor`) protege `/eventos` y `/preferencia`
+- **Cookie de preferencia** de tema visual (claro/oscuro, 30 días)
+- **Modo oscuro** con `localStorage` en el cliente
+- **Errores personalizados**: 404, 400, 500 con Bootstrap
+- **CRUD de eventos** con paginación, búsqueda y categorías
+
+### Tecnologías
+- Spring Boot 3.2.0, Thymeleaf, Spring Data JPA, MySQL
 Navegador → EventoController → EventoService → EventoRepository → MySQL
 ↑
 LogAspect (AOP)
->>> Iniciando metodo: listar
->>> Finalizando metodo: listar

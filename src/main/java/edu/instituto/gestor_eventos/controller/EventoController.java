@@ -1,8 +1,8 @@
-package edu.instituto.gestoreventos.controller;
+package edu.instituto.gestor_eventos.controller;
 
-import edu.instituto.gestoreventos.model.Evento;
-import edu.instituto.gestoreventos.service.CategoriaService;
-import edu.instituto.gestoreventos.service.EventoService;
+import edu.instituto.gestor_eventos.model.Evento;
+import edu.instituto.gestor_eventos.service.CategoriaService;
+import edu.instituto.gestor_eventos.service.EventoService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,8 +32,7 @@ public class EventoController {
             @RequestParam(required = false) Long categoriaId,
             Model model) {
 
-        int pageSize = 6;
-        Pageable pageable = PageRequest.of(page, pageSize);
+        Pageable pageable = PageRequest.of(page, 6);
         Page<Evento> paginaEventos;
 
         if (buscar != null && !buscar.trim().isEmpty()) {
@@ -50,7 +49,6 @@ public class EventoController {
         model.addAttribute("buscar", buscar);
         model.addAttribute("categoriaId", categoriaId);
         model.addAttribute("categorias", categoriaService.listar());
-
         return "index";
     }
 
@@ -63,8 +61,7 @@ public class EventoController {
 
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Long id, Model model) {
-        Evento evento = eventoService.buscarPorId(id);
-        model.addAttribute("evento", evento);
+        model.addAttribute("evento", eventoService.buscarPorId(id));
         model.addAttribute("categorias", categoriaService.listar());
         return "editar-evento";
     }
@@ -86,7 +83,7 @@ public class EventoController {
     @PostMapping("/{id}/eliminar")
     public String eliminar(@PathVariable Long id, RedirectAttributes ra) {
         eventoService.eliminar(id);
-        ra.addFlashAttribute("mensajeExito", "Evento eliminado correctamente");
+        ra.addFlashAttribute("mensajeExito", "Evento eliminado correctamente.");
         return "redirect:/eventos";
     }
 }

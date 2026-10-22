@@ -1,7 +1,7 @@
-package edu.instituto.gestoreventos.service;
+package edu.instituto.gestor_eventos.service;
 
-import edu.instituto.gestoreventos.model.Categoria;
-import edu.instituto.gestoreventos.repository.CategoriaRepository;
+import edu.instituto.gestor_eventos.model.Categoria;
+import edu.instituto.gestor_eventos.repository.CategoriaRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
