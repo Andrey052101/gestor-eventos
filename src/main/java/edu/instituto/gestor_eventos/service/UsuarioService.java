@@ -50,4 +50,4 @@ public class UsuarioService{
         return usuarioRepository.findByNombre(nombre)
                 .filter(u -> u.getContrasena().equals(contrasena))
                 .orElse(null);
-    }}
+    }}//Login y registro

@@ -29,4 +29,4 @@ public class EventoForm {
 
     public String getLugar() { return lugar; }
     public void setLugar(String lugar) { this.lugar = lugar; }
-}
+} //Formulario para crear o editar un evento

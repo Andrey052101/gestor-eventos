@@ -21,11 +21,11 @@ public class PreferenciaControlador {
 //Crea la cookie con la eleccion (claro u oscuro)
         Cookie cookieTema = new Cookie("tema", tema);
         cookieTema.setMaxAge(60 * 60 * 24 * 30); // La sesion dura 30 días en el navegador
-        cookieTema.setPath("/"); // válida para toda la aplicación
+        cookieTema.setPath("/"); // Valida
         respuesta.addCookie(cookieTema);
 
 
         mensajes.addFlashAttribute("ok", "Tema guardado: " + tema);
         return "redirect:/eventos";
 
-    }}
+    }} //Maneja la preferencia (GET lee la cookie de tema, POST guarda la cookie,

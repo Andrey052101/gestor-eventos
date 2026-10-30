@@ -19,5 +19,4 @@ public class LoginInterceptor implements HandlerInterceptor {
             return false;
         }
         return true;
-    }
-}
+    }} //seguridad de rutas, revisa sesion activa

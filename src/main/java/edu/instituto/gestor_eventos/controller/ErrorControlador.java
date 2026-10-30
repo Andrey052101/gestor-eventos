@@ -9,18 +9,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 //Captura errores HTTP y muestra la pagina
 @Controller
 public class ErrorControlador implements ErrorController {
-// Esta ruta la llama Spring Boot automáticamente cuando hay un error
+//Se llama la ruta Spring Boot automáticamente cuando hay un error
 @RequestMapping("/error")
 public String manejarError(HttpServletRequest solicitud, Model modelo) {
 
-    // Lee el codigo de error
+    //Lee el codigo de error
     Integer codigoError = (Integer) solicitud.getAttribute("jakarta.servlet.error.status_code");
 
     if (codigoError == null) {
         codigoError = 500;
     }
 
-    // Prepara el mensaje según el tipo de error
+    // Mensaje segun el error que sea
     String mensaje;
     if (codigoError == 404) {
         mensaje = "La página que buscas no existe.";
@@ -33,6 +33,6 @@ public String manejarError(HttpServletRequest solicitud, Model modelo) {
     modelo.addAttribute("codigo", codigoError);
     modelo.addAttribute("mensaje", mensaje);
 
-    return "error"; // abre error.html
+    return "error"; //abre error.html
 }
 }

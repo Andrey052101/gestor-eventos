@@ -43,4 +43,4 @@ public class EventoService {
     public void eliminar(Long id) {
         eventoRepository.deleteById(id);
     }
-}
+} //Lista con paginacion, filtra por categoria, busca por nombre, elimina evento, guarda un evento, busca evento por id para editarlo

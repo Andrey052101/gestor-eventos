@@ -20,3 +20,4 @@ public class WebConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/login", "/registro", "/css/**", "/js/**", "/error");
     }
 }
+//Registra interceptor y le dice al Spring que rutas proteger

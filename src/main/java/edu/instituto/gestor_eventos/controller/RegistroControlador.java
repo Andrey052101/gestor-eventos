@@ -33,5 +33,4 @@ public class RegistroControlador {
 
         mensajes.addFlashAttribute("ok", "¡Cuenta creada! Ya puedes iniciar sesión.");
         return "redirect:/login";
-    }
-}
+    }} //Maneja el registro de usuarios (GET muestra el form, POST crea el usuario nuevo)
