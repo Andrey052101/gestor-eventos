@@ -157,6 +157,51 @@ En esta fase del proyecto se han implementado mejoras clave en la arquitectura y
 - **Errores personalizados**: 404, 400, 500 con Bootstrap
 - **CRUD de eventos** con paginación, búsqueda y categorías
 
+## Semana 13 – API CRUD de Eventos
+
+Convertí la gestión de eventos de mi proyecto en un servicio web. Con Postman se pueden consultar, crear, modificar y eliminar eventos, y la API responde en JSON. Usa el mismo `EventoService` y la misma base de datos del proyecto.
+
+### Endpoints
+
+| Método | Ruta | Qué hace | Códigos |
+|---|---|---|---|
+| GET | `/api/eventos` | Lista todos | 200 |
+| GET | `/api/eventos/{id}` | Busca uno | 200, 404 |
+| POST | `/api/eventos` | Crea | 200, 400 |
+| PUT | `/api/eventos/{id}` | Modifica | 200, 400, 404 |
+| DELETE | `/api/eventos/{id}` | Elimina | 200, 404 |
+
+200 es éxito, 400 es dato inválido y 404 es evento inexistente.
+
+### Ejemplos
+
+**POST `/api/eventos`**
+```json
+{
+  "nombre": "Feria de Tecnología",
+  "descripcion": "Exposición de proyectos de software",
+  "fecha": "2026-12-05",
+  "lugar": "Auditorio Central",
+  "categoria": { "id": 1 }
+}
+```
+Respuesta 200: el evento creado, con su `id`.
+
+**GET `/api/eventos/32`** (ya eliminado) → 404
+```json
+{ "error": "No existe un evento con id 32" }
+```
+
+**POST con campos vacíos** → 400
+```json
+{ "error": "Datos inválidos", "detalles": { "nombre": "El nombre es obligatorio" } }
+```
+
+### Evidencias en Postman
+
+Capturas en la carpeta `evidencias/`: GET, POST, GET por id, PUT, DELETE, error 404 y dos errores 400.
+Colección: `Semana13.postman_collection.json`.
+
 ### Tecnologías
 - Spring Boot 3.2.0, Thymeleaf, Spring Data JPA, MySQL
 Navegador → EventoController → EventoService → EventoRepository → MySQL
