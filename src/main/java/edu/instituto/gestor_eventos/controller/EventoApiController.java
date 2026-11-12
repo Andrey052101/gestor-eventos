@@ -1,66 +1,64 @@
 package edu.instituto.gestor_eventos.controller;
 
-import edu.instituto.gestor_eventos.model.Evento;
-import edu.instituto.gestor_eventos.service.EventoService;
+import edu.instituto.gestor_eventos.dto.EventoRequest;
+import edu.instituto.gestor_eventos.dto.EventoResponse;
+import edu.instituto.gestor_eventos.service.EventoApiService;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
-import java.util.Map;
 
+/**
+ * Controller: solo define los endpoints y arma las respuestas HTTP.
+ * La lógica y las validaciones están en EventoApiService.
+ */
 @RestController
 @RequestMapping("/api/eventos")
 public class EventoApiController {
 
-    private final EventoService eventoService;
+    private final EventoApiService servicio;
 
-    public EventoApiController(EventoService eventoService) {
-        this.eventoService = eventoService;
+    public EventoApiController(EventoApiService servicio) {
+        this.servicio = servicio;
     }
 
-    // GET /api/eventos
+    // GET /api/eventos -> 200
     @GetMapping
-    public ResponseEntity<List<Evento>> listar() {
-        List<Evento> eventos = eventoService.listarPaginado(Pageable.unpaged()).getContent();
-        return ResponseEntity.ok(eventos);
+    public ResponseEntity<List<EventoResponse>> listar() {
+        return ResponseEntity.ok(servicio.listar());
     }
 
-    // GET /api/eventos/{id}
+    // GET /api/eventos/{id} -> 200 o 404
     @GetMapping("/{id}")
-    public ResponseEntity<?> obtener(@PathVariable Long id) {
-        Evento evento = eventoService.buscarPorId(id);
-        if (evento == null) return noEncontrado(id);
-        return ResponseEntity.ok(evento);
+    public ResponseEntity<EventoResponse> obtener(@PathVariable Long id) {
+        return ResponseEntity.ok(servicio.obtener(id));
     }
 
-    // POST /api/eventos
+    // POST /api/eventos -> 201 + cabecera Location, o 400
     @PostMapping
-    public ResponseEntity<Evento> crear(@Valid @RequestBody Evento evento) {
-        evento.setId(null);
-        return ResponseEntity.ok(eventoService.guardar(evento));
+    public ResponseEntity<EventoResponse> crear(@Valid @RequestBody EventoRequest datos) {
+        EventoResponse creado = servicio.crear(datos);
+        URI ubicacion = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(creado.id())
+                .toUri();
+        return ResponseEntity.created(ubicacion).body(creado);
     }
 
-    // PUT /api/eventos/{id}
+    // PUT /api/eventos/{id} -> 200, 400 o 404
     @PutMapping("/{id}")
-    public ResponseEntity<?> actualizar(@PathVariable Long id,
-                                        @Valid @RequestBody Evento datos) {
-        if (eventoService.buscarPorId(id) == null) return noEncontrado(id);
-        datos.setId(id);
-        return ResponseEntity.ok(eventoService.guardar(datos));
+    public ResponseEntity<EventoResponse> actualizar(@PathVariable Long id,
+                                                     @Valid @RequestBody EventoRequest datos) {
+        return ResponseEntity.ok(servicio.actualizar(id, datos));
     }
 
-    // DELETE /api/eventos/{id}
+    // DELETE /api/eventos/{id} -> 204 (sin contenido) o 404
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminar(@PathVariable Long id) {
-        if (eventoService.buscarPorId(id) == null) return noEncontrado(id);
-        eventoService.eliminar(id);
-        return ResponseEntity.ok(Map.of("mensaje", "Evento " + id + " eliminado"));
-    }
-
-    private ResponseEntity<Map<String, String>> noEncontrado(Long id) {
-        return ResponseEntity.status(404)
-                .body(Map.of("error", "No existe un evento con id " + id));
+    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
+        servicio.eliminar(id);
+        return ResponseEntity.noContent().build();
     }
 }
