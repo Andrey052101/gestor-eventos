@@ -202,6 +202,26 @@ Respuesta 200: el evento creado, con su `id`.
 Capturas en la carpeta `evidencias/`: GET, POST, GET por id, PUT, DELETE, error 404 y dos errores 400.
 Colección: `Semana13.postman_collection.json`.
 
+## Semana 14 – Estándares REST en la API de Eventos
+
+En esta semana mejoré la API de la semana 13 para aplicar buenas prácticas REST, separando la lógica y organizando mejor las respuestas.
+
+### Endpoints principales
+* **GET `/api/eventos`**: Devuelve la lista completa (200 OK).
+* **GET `/api/eventos/{id}`**: Busca por ID (200 OK o 404 si no existe).
+* **POST `/api/eventos`**: Crea un evento nuevo y devuelve la cabecera `Location` (201 Created).
+* **PUT `/api/eventos/{id}`**: Modifica un evento existente (200 OK).
+* **DELETE `/api/eventos/{id}`**: Elimina el evento (204 No Content).
+
+### Qué cambios hice
+* Separé el código en **Controller** (para manejar las rutas) y **Service** (para la lógica de negocio y validaciones).
+* Usé **DTOs** (`EventoRequest` para lo que envía el cliente y `EventoResponse` para lo que devuelve).
+* Agregué validaciones en los DTOs para que los campos obligatorios y las fechas cumplan con el formato correcto (`AAAA-MM-DD`).
+* Implementé un `@RestControllerAdvice` para capturar errores y devolver respuestas limpias en formato JSON con códigos HTTP adecuados (400, 404, 500).
+
+### Pruebas
+Las pruebas se realizaron usando la colección de Postman (`Semana14.postman_collection.json`), validando los códigos de estado del 01 al 09.
+
 ### Tecnologías
 - Spring Boot 3.2.0, Thymeleaf, Spring Data JPA, MySQL
 Navegador → EventoController → EventoService → EventoRepository → MySQL
