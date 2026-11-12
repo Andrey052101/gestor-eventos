@@ -219,6 +219,42 @@ En esta semana mejoré la API de la semana 13 para aplicar buenas prácticas RES
 * Agregué validaciones en los DTOs para que los campos obligatorios y las fechas cumplan con el formato correcto (`AAAA-MM-DD`).
 * Implementé un `@RestControllerAdvice` para capturar errores y devolver respuestas limpias en formato JSON con códigos HTTP adecuados (400, 404, 500).
 
+## Semana 15 – Programación reactiva con Spring (Flux y Mono)
+
+Esta semana le agregué a mi Gestor de Eventos una parte reactiva que funciona solo desde la consola. No creé endpoints nuevos ni usé WebFlux, y la API REST de las semanas anteriores quedó igual y sigue funcionando.
+
+Para esto agregué la dependencia `reactor-core` al `pom.xml` y creé dos clases en el paquete `reactivo`:
+
+- **EventoReactivoService**: es el servicio con `@Service`. Ahí armé los flujos con `Flux` y `Mono`.
+- **EventoReactivoRunner**: se ejecuta cuando arranca la aplicación y va mostrando en la consola cada prueba.
+
+### Los datos que usé
+Hice 5 eventos de ejemplo, que no se guardan en la base de datos. Decidí que un evento está activo (vigente) si su fecha es de hoy o de un día futuro. El "Torneo de robotica" ya pasó, entonces ese es mi registro inactivo.
+
+### Cómo usé los operadores
+Con `filter()` dejo solo los eventos vigentes. Con `map()` convierto cada evento en una frase con el nombre, la categoría, el lugar y la fecha. Con `count()` cuento cuántos hay vigentes, y eso me devuelve un `Mono<Long>`.
+
+### Qué se ve en la consola
+Cuando corro el proyecto, después del arranque de Spring aparecen 6 pruebas:
+
+0. **Sin suscripción:** armo el flujo pero no hago `subscribe()`, y no sale nada.
+1. **Eventos vigentes:** llegan 4 por `onNext` y al final `onComplete`. El inactivo no aparece.
+2. **Conteo y búsqueda:** el conteo da 4. Al buscar el id 2 lo encuentra, y con el id 999 el `Mono` termina vacío porque no existe.
+3. **Sin registros activos:** filtré por el lugar "Gimnasio", que solo tiene el evento inactivo. No hay ningún `onNext`, llega `onComplete` y el conteo da 0.
+4. **Error:** metí un evento con la fecha mal escrita ("pronto"). Salen los 4 `onNext` y luego `onError`. Ahí no llega `onComplete`.
+5. **Demanda y cancelación:** con un `BaseSubscriber` pido un elemento a la vez con `request(1)`. Recibo 2 y llamo a `cancel()`. Después de eso ya no llega nada más.
+
+### Lo que aprendí
+- **Por qué hay que suscribirse:** un `Flux` o un `Mono` solo describe qué hacer con los datos, pero no los emite hasta que alguien llama a `subscribe()`. En la prueba 0 se ve que, sin eso, no pasa nada.
+- **Las señales:** `onNext` entrega cada dato, `onComplete` avisa que todo terminó bien y `onError` avisa que algo falló. Un mismo flujo termina con una de las dos, nunca con las dos.
+- **Control de demanda:** con `request(1)` el suscriptor decide cuántos elementos recibe, y con `cancel()` corta el flujo y el productor deja de enviar.
+
+### Cómo probarlo
+1. Encender MySQL.
+2. Ejecutar `GestorEventosApplication`.
+3. Buscar en la consola las pruebas que empiezan con `===== 0.`
+4. Para comprobar que la API REST sigue bien, abrir `http://localhost:8080/api/eventos`.
+
 ### Pruebas
 Las pruebas se realizaron usando la colección de Postman (`Semana14.postman_collection.json`), validando los códigos de estado del 01 al 09.
 
