@@ -1,181 +1,126 @@
 # Gestor de Eventos
 
-Aplicación web gestora de eventos desarrollada con Spring Boot como proyecto.
+Este es mi proyecto del semestre para Programación IV. Es una aplicación web para administrar eventos (crear, ver, editar, buscar y eliminar), hecha con **Spring Boot**. Fui construyéndola semana a semana: empecé con una página sencilla y poco a poco le fui agregando base de datos, usuarios, una API REST y, en la última semana, una parte de programación reactiva.
 
-## Utilizado
+En este README explico qué es el proyecto, cómo se ejecuta y qué hice en cada semana.
 
-- Java 21
-- Spring Boot 3.2
-- Spring MVC
-- Thymeleaf
-- AOP (Programación Orientada a Aspectos)
-- Spring Data JPA
-- MySQL
-- Maven
+---
 
-## Estructura del proyecto
+## Con qué está hecho
 
+- **Java 21**
+- **Spring Boot 3.2.0**
+- **Spring MVC** y **Thymeleaf** para las páginas web
+- **Spring Data JPA** y **MySQL** para guardar los datos
+- **AOP** (programación orientada a aspectos) para el registro de actividad en consola
+- **Project Reactor** (`reactor-core`) para la parte reactiva
+- **Maven** para manejar las dependencias
+
+## Cómo está organizado
+
+Separé el código por capas para que cada clase tenga una sola responsabilidad:
+
+```text
 src/main/java/edu/instituto/gestor_eventos/
-├── aspect/
-│ └── LogAspect.java
-├── controller/
-│ ├── EventoController.java
-│ ├── InscripcionController.java
-│ └── UsuarioController.java
-├── model/
-│ ├── Evento.java
-│ ├── EventoForm.java
-│ ├── Inscripcion.java
-│ └── Usuario.java
-├── repository/
-│ ├── EventoRepository.java
-│ ├── InscripcionRepository.java
-│ └── UsuarioRepository.java
-└── service/
-├── EventoService.java
-├── InscripcionService.java
-└── UsuarioService.java
+├── GestorEventosApplication.java   (clase principal)
+├── aspect/        LogAspect
+├── config/        WebConfig
+├── controller/    controladores de las páginas y de la API
+├── dto/           EventoRequest, EventoResponse
+├── exception/     excepciones propias
+├── interceptor/   LoginInterceptor
+├── model/         Evento, Categoria, Usuario, EventoForm
+├── reactivo/      EventoReactivoService, EventoReactivoRunner
+├── repository/    acceso a la base de datos
+└── service/       lógica del negocio
+```
 
+El recorrido normal de una petición es este:
 
-## Cómo ejecutar
+```text
+Navegador → Controller → Service → Repository → MySQL
+                 ↑
+        LogAspect (AOP) y LoginInterceptor
+```
+
+## Cómo ejecutarlo
+
+1. Encender MySQL (la conexión se configura en `application.properties`).
+2. Ejecutar la aplicación desde IntelliJ (`GestorEventosApplication`) o con este comando:
 
 ```bash
 ./mvnw spring-boot:run
 ```
 
-Abrir en el navegador:
+3. Abrir en el navegador:
+   - Registro de usuarios: http://localhost:8080/registro
+   - Lista de eventos: http://localhost:8080/eventos
+   - API REST: http://localhost:8080/api/eventos
 
-(http://localhost:8080/registro)
+---
 
+## Mi avance semana por semana
 
-Para registrar un nuevo evento:
+### Semana 1 – Configuración inicial
+Creé el proyecto con Spring Initializr y agregué las dependencias Spring Web y Thymeleaf. Dejé lista la estructura base y el archivo `application.properties`.
 
-(http://localhost:8080/eventos/nuevo)
+### Semana 2 – Fundamentos de Spring
+Aprendí a organizar el proyecto por capas (controller, service y model) y creé los paquetes correspondientes. Hice la clase `Evento` como POJO y practiqué las anotaciones básicas: `@SpringBootApplication`, `@Service` y `@RestController`.
 
+### Semana 3 – Configuración y dependencias
+Configuré las dependencias de la aplicación web, implementé los primeros repositorios y ajusté el servidor desde `application.properties`.
 
-## Avances:
+### Semana 4 – Spring MVC y Thymeleaf
+Hice mi primer controlador MVC con `@Controller` y `@GetMapping`, y una vista dinámica con Thymeleaf (`th:each`, `th:text`). Ya quedó funcionando la ruta `/eventos` y entendí cómo se separan las responsabilidades: Controller → Service → Model → Vista.
 
-### Semana 1 — Configuración inicial
-- Creación del proyecto con Spring Initializr
-- Configuración de dependencias: Spring Web, Thymeleaf
-- Estructura base del proyecto
-- Archivo application.properties
+### Semana 5 – Programación orientada a aspectos (AOP)
+Agregué la dependencia `aspectjweaver` y creé el paquete `aspect` con la clase `LogAspect` (`@Aspect` y `@Component`). Con un pointcut sobre la capa de servicios y las anotaciones `@Before` y `@After`, la aplicación imprime en consola un registro cada vez que se usa un método del servicio, por ejemplo al entrar a `/eventos`.
 
-### Semana 2 — Fundamentos de Spring
-- Arquitectura por capas: Controller, Service, Model
-- Creación de paquetes controller, model, service
-- Creación del POJO Evento
-- Anotaciones: @SpringBootApplication, @Service, @RestController
+### Semana 7 – Formularios y validación
+Creé la clase `EventoForm` con validaciones `@NotBlank` y el formulario `nuevo-evento.html`. Hice las rutas GET y POST de `/eventos/nuevo`, validé los datos con `@Valid` y `BindingResult`, y muestro mensajes de error cuando falta algún campo. Si todo está bien, el registro redirige a `/eventos`.
 
-### Semana 3 — Configuración y dependencias
-- Configuración de dependencias de aplicación web con Spring
-- Implementación de repositorios
-- Configuración del servidor en application.properties
+### Semana 8 – Persistencia con JPA y MySQL
+Agregué Spring Data JPA y el conector de MySQL. Convertí `Evento` en entidad (`@Entity`, `@Id`, `@GeneratedValue`), creé `EventoRepository` con `JpaRepository` y configuré la conexión en `application.properties` con `ddl-auto=update`. A partir de aquí los eventos se guardan de verdad en la base de datos: Formulario → Controlador → Servicio → Repositorio → MySQL.
 
-### Semana 4 — Spring MVC y Thymeleaf
-- Controlador MVC con @Controller y @GetMapping
-- Separación de responsabilidades: Controller → Service → Model → View
-- Vista dinámica con Thymeleaf (th:each, th:text)
-- Ruta funcional: /eventos
+### Semana 9 – CRUD completo
+Completé las cuatro operaciones sobre los eventos:
+- **Crear:** formulario `nuevo-evento.html` con validaciones.
+- **Listar:** los eventos salen desde MySQL en `eventos.html`.
+- **Editar:** `editar-evento.html` con los datos ya cargados (`/eventos/editar/{id}`).
+- **Eliminar:** botón directo desde el listado (`/eventos/eliminar/{id}`).
 
-### Semana 5 — Programación Orientada a Aspectos (AOP)
-- Dependencia aspectjweaver agregada al pom.xml
-- Paquete aspect creado
-- Clase LogAspect con @Aspect y @Component
-- Pointcut configurado sobre la capa de servicios
-- @Before y @After interceptando métodos del servicio
-- Logging transversal visible en consola al ejecutar /eventos
+### Semana 10 – Validaciones, búsqueda, paginación y relaciones
+Esta semana mejoré bastante la aplicación:
+1. **Validaciones:** usé `@NotBlank`, `@NotNull` y otras en las entidades, junto con `@Valid` y `BindingResult`. Los errores salen en rojo en los formularios de crear y editar.
+2. **Búsqueda:** se puede buscar por nombre con una consulta derivada (`findByNombreContainingIgnoreCase`), sin importar mayúsculas ni minúsculas, y hay un botón para limpiar la búsqueda.
+3. **Paginación:** muestro 6 tarjetas por página con `Pageable` y `PageRequest`, con botones de Anterior, Siguiente y números de página. También controlo el caso en que una búsqueda no encuentra nada.
+4. **Relación entre entidades:** relacioné `Evento` con `Categoria` usando `@ManyToOne`, y agregué un selector de categoría en los formularios.
+5. **Mensajes al usuario:** usé `RedirectAttributes` para mostrar mensajes de éxito al guardar o eliminar, el patrón Post-Redirect-Get para que un formulario no se reenvíe por error, y una ventana de confirmación antes de eliminar.
 
-### Semana 7 — Spring MVC: Formularios y Validación
-- Clase EventoForm.java con validaciones @NotBlank
-- Formulario HTML nuevo-evento.html con Thymeleaf
-- Ruta GET /eventos/nuevo para mostrar el formulario
-- Ruta POST /eventos/nuevo para recibir y validar datos
-- Validación con @Valid y BindingResult
-- Mensajes de error en el formulario cuando hay campos vacíos
-- Registro exitoso redirige a /eventos
+### Semana 11 – Sesiones, cookies y manejo de errores
+- **Inicio y cierre de sesión** con `HttpSession`.
+- **Registro de usuarios** con validación.
+- **Roles:** el ADMIN puede crear, editar y eliminar; el USER solo puede ver.
+- **Interceptor** (`LoginInterceptor`) que protege las rutas `/eventos` y `/preferencia`.
+- **Cookie de preferencia** para el tema claro u oscuro, que dura 30 días.
+- **Modo oscuro** guardado en `localStorage`.
+- **Páginas de error personalizadas** para 404, 400 y 500.
 
-### Semana 8 — Persistencia con Spring Data JPA y MySQL
-- Dependencias Spring Data JPA y mysql-connector-j agregadas al pom.xml
-- Entidad Evento.java mapeada con @Entity, @Id y @GeneratedValue
-- Repositorio EventoRepository extendiendo de JpaRepository
-- Configuración del Datasource y conexión a MySQL en application.properties
-- Estrategia spring.jpa.hibernate.ddl-auto=update configurada
-- EventoService actualizado para delegar la persistencia al repositorio JPA
-- Flujo: Formulario → Controlador → Servicio → Repositorio → MySQL
-
-### Semana 9 — CRUD completo con MySQL
-- Operación Crear: formulario nuevo-evento.html con validaciones
-- Operación Listar: listado de eventos desde MySQL en eventos.html
-- Operación Editar: formulario editar-evento.html con datos precargados
-- Operación Eliminar: eliminación directa desde el listado
-- Botones Editar y Eliminar en cada card del listado
-- Rutas GET y POST para editar: /eventos/editar/{id}
-- Ruta GET para eliminar: /eventos/eliminar/{id}
-- CRUD completo funcionando con persistencia real en MySQL
-
-## Semana 10 – Validaciones, Búsqueda, Paginación y Relaciones
-
-En esta fase del proyecto se han implementado mejoras clave en la arquitectura y la interfaz de usuario del Gestor de Eventos, cumpliendo con los requerimientos de la Actividad de la Semana 10:
-
-### Características Implementadas
-1. **Validaciones de Formularios:**
-    - Incorporación de anotaciones de validación (`@NotBlank`, `@NotNull`, etc.) en las entidades.
-    - Uso de `@Valid` y `BindingResult` en el controlador para interceptar datos incorrectos o vacíos.
-    - Mensajes de error personalizados y destacados en color rojo en los formularios de creación y edición.
-
-2. **Sistema de Búsqueda:**
-    - Búsqueda dinámica de eventos por nombre utilizando consultas derivadas (`findByNombreContainingIgnoreCase`)[cite: 2].
-    - Filtrado inteligente que soporta coincidencias parciales sin importar mayúsculas o minúsculas.
-    - Botón de limpieza para restablecer la vista completa del listado.
-
-3. **Paginación Dinámica:**
-    - Distribución de registros por bloques (6 tarjetas por página) utilizando `Pageable` y `PageRequest`[cite: 2].
-    - Controles de navegación profesionales (Anterior, Siguiente y numeración directa de páginas).
-    - Manejo de estados vacíos cuando una categoría o búsqueda no arroja resultados.
-
-4. **Relación entre Entidades:**
-    - Configuración de una relación JPA `@ManyToOne` entre la entidad `Evento` y `Categoria`.
-    - Selector dinámico de categorías integrado de forma fluida en los formularios del sistema.
-
-5. **Mensajes al Usuario y Redireccionamiento:**
-    - Uso de `RedirectAttributes` para enviar mensajes flash de éxito tras guardar o eliminar registros[cite: 2].
-    - Patrón de redirección Post-Redirect-Get para evitar el reenvío duplicado de formularios.
-    - Modal de confirmación flotante moderno para la eliminación segura de registros.
-
-## Semana 11 – Sesiones, Cookies y Manejo de Errores
-
-### Funcionalidades implementadas
-
-- **Inicio de sesión** con `HttpSession` (nombre, contraseña)
-- **Cierre de sesión** que invalida la sesión
-- **Registro de usuarios** con validación
-- **Roles**: ADMIN puede crear/editar/eliminar · USER solo visualiza
-- **Interceptor** (`LoginInterceptor`) protege `/eventos` y `/preferencia`
-- **Cookie de preferencia** de tema visual (claro/oscuro, 30 días)
-- **Modo oscuro** con `localStorage` en el cliente
-- **Errores personalizados**: 404, 400, 500 con Bootstrap
-- **CRUD de eventos** con paginación, búsqueda y categorías
-
-## Semana 13 – API CRUD de Eventos
-
-Convertí la gestión de eventos de mi proyecto en un servicio web. Con Postman se pueden consultar, crear, modificar y eliminar eventos, y la API responde en JSON. Usa el mismo `EventoService` y la misma base de datos del proyecto.
-
-### Endpoints
+### Semana 13 – API CRUD de eventos
+Convertí la gestión de eventos en un servicio web. Con Postman se pueden consultar, crear, modificar y eliminar eventos, y la API responde en JSON. Usa el mismo `EventoService` y la misma base de datos del resto del proyecto.
 
 | Método | Ruta | Qué hace | Códigos |
 |---|---|---|---|
-| GET | `/api/eventos` | Lista todos | 200 |
-| GET | `/api/eventos/{id}` | Busca uno | 200, 404 |
-| POST | `/api/eventos` | Crea | 200, 400 |
-| PUT | `/api/eventos/{id}` | Modifica | 200, 400, 404 |
-| DELETE | `/api/eventos/{id}` | Elimina | 200, 404 |
+| GET | `/api/eventos` | Lista todos los eventos | 200 |
+| GET | `/api/eventos/{id}` | Busca un evento | 200, 404 |
+| POST | `/api/eventos` | Crea un evento | 200, 400 |
+| PUT | `/api/eventos/{id}` | Modifica un evento | 200, 400, 404 |
+| DELETE | `/api/eventos/{id}` | Elimina un evento | 200, 404 |
 
-200 es éxito, 400 es dato inválido y 404 es evento inexistente.
+Los códigos significan: 200, todo salió bien; 400, mandé un dato inválido; 404, el evento no existe.
 
-### Ejemplos
+**Ejemplo de POST `/api/eventos`:**
 
-**POST `/api/eventos`**
 ```json
 {
   "nombre": "Feria de Tecnología",
@@ -185,64 +130,73 @@ Convertí la gestión de eventos de mi proyecto en un servicio web. Con Postman 
   "categoria": { "id": 1 }
 }
 ```
-Respuesta 200: el evento creado, con su `id`.
 
-**GET `/api/eventos/32`** (ya eliminado) → 404
+La respuesta (200) es el evento creado, con su `id`.
+
+**Ejemplo de error 404** (pedir un evento que ya no existe):
+
 ```json
 { "error": "No existe un evento con id 32" }
 ```
 
-**POST con campos vacíos** → 400
+**Ejemplo de error 400** (enviar campos vacíos):
+
 ```json
 { "error": "Datos inválidos", "detalles": { "nombre": "El nombre es obligatorio" } }
 ```
 
-### Evidencias en Postman
+**Evidencias:** las capturas de Postman están en la carpeta `evidencias/` (GET, POST, GET por id, PUT, DELETE, el error 404 y dos errores 400). La colección es `Semana13.postman_collection.json`.
 
-Capturas en la carpeta `evidencias/`: GET, POST, GET por id, PUT, DELETE, error 404 y dos errores 400.
-Colección: `Semana13.postman_collection.json`.
+### Semana 14 – Estándares REST en la API
+Mejoré la API de la semana 13 aplicando buenas prácticas REST, y ordené mejor el código y las respuestas.
 
-## Semana 14 – Estándares REST en la API de Eventos
+| Método | Ruta | Respuesta |
+|---|---|---|
+| GET | `/api/eventos` | Lista completa (200 OK) |
+| GET | `/api/eventos/{id}` | 200 OK, o 404 si no existe |
+| POST | `/api/eventos` | Crea el evento y devuelve la cabecera `Location` (201 Created) |
+| PUT | `/api/eventos/{id}` | Modifica el evento (200 OK) |
+| DELETE | `/api/eventos/{id}` | Elimina el evento (204 No Content) |
 
-En esta semana mejoré la API de la semana 13 para aplicar buenas prácticas REST, separando la lógica y organizando mejor las respuestas.
+Lo que cambié:
+- Separé el código en **Controller** (las rutas) y **Service** (la lógica y las validaciones).
+- Usé **DTOs**: `EventoRequest` para lo que envía el cliente y `EventoResponse` para lo que devuelve la API.
+- Agregué validaciones en los DTOs para que los campos obligatorios y las fechas cumplan el formato `AAAA-MM-DD`.
+- Hice un `@RestControllerAdvice` que captura los errores y responde en JSON con el código HTTP adecuado (400, 404 o 500).
 
-### Endpoints principales
-* **GET `/api/eventos`**: Devuelve la lista completa (200 OK).
-* **GET `/api/eventos/{id}`**: Busca por ID (200 OK o 404 si no existe).
-* **POST `/api/eventos`**: Crea un evento nuevo y devuelve la cabecera `Location` (201 Created).
-* **PUT `/api/eventos/{id}`**: Modifica un evento existente (200 OK).
-* **DELETE `/api/eventos/{id}`**: Elimina el evento (204 No Content).
+**Pruebas:** usé la colección de Postman `Semana14.postman_collection.json`, y validé los códigos de estado del 01 al 09.
 
-### Qué cambios hice
-* Separé el código en **Controller** (para manejar las rutas) y **Service** (para la lógica de negocio y validaciones).
-* Usé **DTOs** (`EventoRequest` para lo que envía el cliente y `EventoResponse` para lo que devuelve).
-* Agregué validaciones en los DTOs para que los campos obligatorios y las fechas cumplan con el formato correcto (`AAAA-MM-DD`).
-* Implementé un `@RestControllerAdvice` para capturar errores y devolver respuestas limpias en formato JSON con códigos HTTP adecuados (400, 404, 500).
+---
 
 ## Semana 15 – Programación reactiva con Spring (Flux y Mono)
 
-Esta semana le agregué a mi Gestor de Eventos una parte reactiva que funciona solo desde la consola. No creé endpoints nuevos ni usé WebFlux, y la API REST de las semanas anteriores quedó igual y sigue funcionando.
+### Qué hice
+Esta semana le agregué al proyecto una parte reactiva que funciona solo desde la consola. No creé endpoints nuevos ni usé WebFlux, y la API REST de las semanas anteriores quedó igual y sigue funcionando.
 
-Para esto agregué la dependencia `reactor-core` al `pom.xml` y creé dos clases en el paquete `reactivo`:
+Para lograrlo agregué la dependencia `reactor-core` al `pom.xml` y creé dos clases en el paquete `reactivo`:
 
-- **EventoReactivoService**: es el servicio con `@Service`. Ahí armé los flujos con `Flux` y `Mono`.
-- **EventoReactivoRunner**: se ejecuta cuando arranca la aplicación y va mostrando en la consola cada prueba.
+- **`EventoReactivoService`**: es un servicio con `@Service`. Aquí armé los flujos con `Flux` y `Mono`.
+- **`EventoReactivoRunner`**: se ejecuta solo cuando arranca la aplicación (usa `CommandLineRunner`) y va mostrando en la consola cada prueba.
 
 ### Los datos que usé
-Hice 5 eventos de ejemplo, que no se guardan en la base de datos. Decidí que un evento está activo (vigente) si su fecha es de hoy o de un día futuro. El "Torneo de robotica" ya pasó, entonces ese es mi registro inactivo.
+Hice 5 eventos de ejemplo que **no se guardan en la base de datos**. Decidí que un evento está activo (vigente) cuando su fecha es de hoy o de un día futuro. El "Torneo de robotica" ya pasó, así que ese es mi registro inactivo.
 
 ### Cómo usé los operadores
-Con `filter()` dejo solo los eventos vigentes. Con `map()` convierto cada evento en una frase con el nombre, la categoría, el lugar y la fecha. Con `count()` cuento cuántos hay vigentes, y eso me devuelve un `Mono<Long>`.
+- `filter()` deja solo los eventos vigentes.
+- `map()` convierte cada evento en una frase con el nombre, la categoría, el lugar y la fecha.
+- `count()` cuenta cuántos eventos hay vigentes y devuelve un `Mono<Long>`.
 
 ### Qué se ve en la consola
-Cuando corro el proyecto, después del arranque de Spring aparecen 6 pruebas:
+Cuando ejecuto el proyecto, después del arranque de Spring aparecen 6 pruebas:
 
-0. **Sin suscripción:** armo el flujo pero no hago `subscribe()`, y no sale nada.
-1. **Eventos vigentes:** llegan 4 por `onNext` y al final `onComplete`. El inactivo no aparece.
-2. **Conteo y búsqueda:** el conteo da 4. Al buscar el id 2 lo encuentra, y con el id 999 el `Mono` termina vacío porque no existe.
-3. **Sin registros activos:** filtré por el lugar "Gimnasio", que solo tiene el evento inactivo. No hay ningún `onNext`, llega `onComplete` y el conteo da 0.
-4. **Error:** metí un evento con la fecha mal escrita ("pronto"). Salen los 4 `onNext` y luego `onError`. Ahí no llega `onComplete`.
-5. **Demanda y cancelación:** con un `BaseSubscriber` pido un elemento a la vez con `request(1)`. Recibo 2 y llamo a `cancel()`. Después de eso ya no llega nada más.
+| # | Prueba | Qué pasa |
+|---|---|---|
+| 0 | Sin suscripción | Armo el flujo pero no hago `subscribe()`, y no sale nada. |
+| 1 | Eventos vigentes | Llegan 4 eventos por `onNext` y al final `onComplete`. El inactivo no aparece. |
+| 2 | Conteo y búsqueda | El conteo da 4. El id 2 se encuentra, y con el id 999 el `Mono` termina vacío porque no existe. |
+| 3 | Sin registros activos | Filtro por el lugar "Gimnasio", que solo tiene el evento inactivo. No hay `onNext`, llega `onComplete` y el conteo da 0. |
+| 4 | Error | Agrego un evento con la fecha mal escrita ("pronto"). Salen los 4 `onNext` y luego `onError`, sin `onComplete`. |
+| 5 | Demanda y cancelación | Con un `BaseSubscriber` pido un elemento a la vez con `request(1)`. Recibo 2 y llamo a `cancel()`. Después ya no llega nada más. |
 
 ### Lo que aprendí
 - **Por qué hay que suscribirse:** un `Flux` o un `Mono` solo describe qué hacer con los datos, pero no los emite hasta que alguien llama a `subscribe()`. En la prueba 0 se ve que, sin eso, no pasa nada.
@@ -253,13 +207,4 @@ Cuando corro el proyecto, después del arranque de Spring aparecen 6 pruebas:
 1. Encender MySQL.
 2. Ejecutar `GestorEventosApplication`.
 3. Buscar en la consola las pruebas que empiezan con `===== 0.`
-4. Para comprobar que la API REST sigue bien, abrir `http://localhost:8080/api/eventos`.
-
-### Pruebas
-Las pruebas se realizaron usando la colección de Postman (`Semana14.postman_collection.json`), validando los códigos de estado del 01 al 09.
-
-### Tecnologías
-- Spring Boot 3.2.0, Thymeleaf, Spring Data JPA, MySQL
-Navegador → EventoController → EventoService → EventoRepository → MySQL
-↑
-LogAspect (AOP)
+4. Para comprobar que la API REST sigue bien, abrir http://localhost:8080/api/eventos
