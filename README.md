@@ -19,6 +19,41 @@ Proyecto Spring Boot: CRUD web (Thymeleaf), API REST, programacion reactiva con 
 
 Se conservan el CRUD web (/eventos), la API REST (/api/eventos) y la demo reactiva por consola.
 
+## Semana 16 - Spring WebFlux (Mono, Flux, SSE y WebClient)
+
+### Organizacion del modulo
+- `webflux/config/WebClientConfig`: configura el WebClient con la URL base (`demo.api.url`).
+- `webflux/controller/ReactiveEventoController`: define los endpoints reactivos.
+- `webflux/service/EventoReactiveService`: Mono y Flux sobre los eventos guardados en la base de datos.
+- `webflux/service/ApiEventosClienteService`: consume HTTP con WebClient (`retrieve()`, `bodyToMono()`, `timeout()`, `onErrorResume()`).
+
+### Pruebas realizadas
+Las capturas de pantalla se entregaron en Teams. Resultados obtenidos:
+
+**1. Mono**: `curl.exe -i http://localhost:8080/api/v1/reactive/bienvenida/Andrey`
+
+    HTTP/1.1 200
+    Bienvenido a Gestor de Eventos, Andrey. Hay 20 eventos registrados.
+
+**2. Streaming SSE** (llegan uno por uno): `curl.exe -N http://localhost:8080/api/v1/reactive/eventos`
+
+    data:Evento: Festival Electronico | 2027-01-21 | Centro de Eventos | Musica y Conciertos
+    data:Evento: Feria de Tecnologia | 2026-12-05 | Auditorio Central | Musica y Conciertos
+    data:Evento: Feria de Tecnologia | 2026-12-05 | Auditorio Central | Musica y Conciertos
+    data:Evento: Hackaton de Innovacion | 2026-11-28 | Facultad de Ingenieria | Tecnologia
+    data:Evento: Clase de Ciclomontanismo | 2026-11-27 | Punto de partida Zona Norte | Deportes
+
+**3. WebClient (fuente disponible)**: `curl.exe -i http://localhost:8080/api/v1/reactive/estado-api`
+
+    HTTP/1.1 200
+    WebClient consulto /api/eventos y recibio 20 eventos.
+
+**4. WebClient (fuente no disponible)**: `curl.exe -i http://localhost:8080/api/v1/reactive/estado-api-caida`
+
+    HTTP/1.1 200
+    Fuente no disponible (Fuente externa). Causa: WebClientRequestException
+
+`timeout()` y `onErrorResume()` devuelven un mensaje controlado en lugar de un error 500.
 ## Evidencias
 Mono, SSE con `curl.exe -N` y WebClient (fuente disponible):
 (Captura entregada en Teams)
