@@ -37,4 +37,9 @@ public class ReactiveEventoController {
     public Mono<String> estadoApi() {
         return cliente.consultarApi();
     }
+
+    @GetMapping("/estado-api-caida")
+    public Mono<String> estadoApiCaida() {
+        return cliente.consultarFuenteCaida();
+    }
 }
