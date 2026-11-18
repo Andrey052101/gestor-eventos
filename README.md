@@ -263,3 +263,36 @@ Las pruebas se realizaron usando la colección de Postman (`Semana14.postman_col
 Navegador → EventoController → EventoService → EventoRepository → MySQL
 ↑
 LogAspect (AOP)
+## Semana 16 – Spring WebFlux: Mono, Flux, SSE y WebClient
+
+Agregué un módulo WebFlux independiente en el paquete `webflux`, organizado en configuración, servicio y controlador. El CRUD, la API REST y el login siguen funcionando sin cambios.
+
+### Cómo ejecutarlo
+1. Encender MySQL.
+2. Ejecutar `GestorEventosApplication` desde IntelliJ (o `.\mvnw.cmd spring-boot:run`).
+3. Debe haber al menos 5 eventos registrados para ver el streaming completo.
+
+### Endpoints
+| Método | Ruta | Qué hace |
+|---|---|---|
+| GET | `/api/v1/reactive/bienvenida/{usuario}` | `Mono<String>`: saluda al usuario e informa cuántos eventos hay registrados |
+| GET | `/api/v1/reactive/eventos` | `Flux<String>` por SSE (`text/event-stream`): los 5 eventos más recientes, uno por segundo |
+| GET | `/api/v1/reactive/estado-api` | `WebClient` consulta `/api/eventos`, con `timeout` de 3 segundos y `onErrorResume` |
+
+### Pruebas
+    curl.exe -i http://localhost:8080/api/v1/reactive/bienvenida/Andrey
+    curl.exe -N http://localhost:8080/api/v1/reactive/eventos
+    curl.exe -i http://localhost:8080/api/v1/reactive/estado-api
+
+Para simular una fuente caída se cambia `demo.api.url` a un puerto sin servicio y la respuesta es `API de eventos no disponible`.
+
+### Evidencias
+Capturas en la carpeta `evidencias/`: respuesta con Mono, cinco eventos SSE y consumo con WebClient.
+
+### Diferencias entre Spring MVC y WebFlux
+* **MVC** usa el modelo servlet: un hilo atiende cada petición y se bloquea mientras espera (por ejemplo, a la base de datos). Es el modelo natural para Thymeleaf, sesiones, interceptores y JPA.
+* **WebFlux** es no bloqueante: pocos hilos atienden muchas peticiones, y los datos viajan como `Mono` (0 o 1 elemento) o `Flux` (0 a muchos), con control de demanda. Permite streaming como SSE.
+* **En este proyecto conviven los dos.** Como el CRUD usa Thymeleaf, sesiones e interceptores, la aplicación arranca sobre Spring MVC (Tomcat) y usa los tipos reactivos de WebFlux (`Mono`, `Flux`, `WebClient`) dentro de ella. Un servidor completamente reactivo exigiría migrar el CRUD.
+
+### Justificación de la funcionalidad reactiva
+Los eventos más recientes se entregan por streaming para que un cliente los vea llegar uno a uno sin esperar la respuesta completa, y `WebClient` consulta la API sin bloquear hilos y con un plan de respaldo si la fuente falla. Como JPA es bloqueante, las consultas a la base de datos se ejecutan en el scheduler `boundedElastic`.
